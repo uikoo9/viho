@@ -1,1 +1,203 @@
-## viho
+# viho
+
+A lightweight CLI tool for managing and chatting with AI models.
+
+[![npm version](https://img.shields.io/npm/v/viho.svg)](https://www.npmjs.com/package/viho)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- Multiple AI model management
+- Interactive chat with streaming responses
+- Support for thinking mode (enabled/disabled/auto)
+- Configurable API endpoints (OpenAI, Anthropic, custom providers)
+- Default model configuration
+- Simple and intuitive CLI interface
+- Persistent configuration storage
+
+## Installation
+
+Install globally via npm:
+
+```bash
+npm install -g viho
+```
+
+## Requirements
+
+- Node.js >= 18.0.0
+
+## Quick Start
+
+1. Add your first AI model:
+
+```bash
+viho model add
+```
+
+2. Set it as default:
+
+```bash
+viho model default
+```
+
+3. Start chatting:
+
+```bash
+viho chat
+```
+
+## Commands
+
+### Model Management
+
+#### `viho model add`
+
+Add a new AI model configuration interactively.
+
+You'll be prompted to enter:
+
+- Model name (a custom identifier)
+- API key
+- Base URL (e.g., https://api.openai.com/v1)
+- Model ID (e.g., gpt-4, claude-3-5-sonnet-20241022)
+- Thinking mode (enabled/disabled/auto)
+
+```bash
+viho model add
+```
+
+#### `viho model list`
+
+List all configured models:
+
+```bash
+viho model list
+```
+
+#### `viho model remove`
+
+Remove a model configuration:
+
+```bash
+viho model remove
+```
+
+#### `viho model default`
+
+Set a default model for chat sessions:
+
+```bash
+viho model default
+```
+
+### Chat
+
+#### `viho chat [modelName]`
+
+Start an interactive chat session with an AI model.
+
+If no model name is provided, uses the default model:
+
+```bash
+viho chat
+```
+
+Or specify a model explicitly:
+
+```bash
+viho chat mymodel
+```
+
+The chat interface includes:
+
+- Editor-based question input
+- Streaming responses
+- Visual thinking process (when enabled)
+- Colored output for better readability
+
+## Configuration
+
+Configuration is stored in `~/viho.json`. You can manage all settings through the CLI commands.
+
+### Example Configuration Structure
+
+```json
+{
+  "mymodel": {
+    "modelName": "mymodel",
+    "apiKey": "your-api-key",
+    "baseURL": "https://api.openai.com/v1",
+    "modelID": "gpt-4",
+    "modelThinking": "auto"
+  },
+  "default": "mymodel"
+}
+```
+
+## Supported Providers
+
+viho works with any OpenAI-compatible API, including:
+
+- OpenAI (GPT-4, GPT-3.5, etc.)
+- Anthropic Claude (via compatible endpoints)
+- Custom LLM providers with OpenAI-compatible APIs
+
+## Examples
+
+### Adding an OpenAI Model
+
+```bash
+viho model add
+# Enter model name: gpt4
+# Enter API key: sk-...
+# Enter base URL: https://api.openai.com/v1
+# Enter model ID: gpt-4
+# Thinking mode: disabled
+```
+
+### Adding a Claude Model
+
+```bash
+viho model add
+# Enter model name: claude
+# Enter API key: your-anthropic-key
+# Enter base URL: https://api.anthropic.com
+# Enter model ID: claude-3-5-sonnet-20241022
+# Thinking mode: auto
+```
+
+### Setting Up for First Use
+
+```bash
+# Add a model
+viho model add
+
+# Set it as default
+viho model default
+
+# Start chatting
+viho chat
+```
+
+## Dependencies
+
+- [qiao-cli](https://www.npmjs.com/package/qiao-cli) - CLI utilities
+- [qiao-config](https://www.npmjs.com/package/qiao-config) - Configuration management
+- [qiao-llm](https://www.npmjs.com/package/qiao-llm) - LLM integration
+
+## License
+
+MIT
+
+## Author
+
+uikoo9 <uikoo9@qq.com>
+
+## Issues
+
+Report issues at: https://github.com/uikoo9/viho/issues
+
+## Homepage
+
+https://github.com/uikoo9/viho
