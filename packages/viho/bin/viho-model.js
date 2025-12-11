@@ -11,10 +11,10 @@ const actions = ['add', 'list', 'remove', 'default'];
 // model
 cli.cmd
   .command('model <action>')
-  .description('模型相关操作')
+  .description('Manage AI models')
   .action((action) => {
     if (!actions.includes(action)) {
-      console.log(cli.colors.red('非法的模型操作'));
+      console.log(cli.colors.red('Invalid action. Use: add, list, remove, default'));
       return;
     }
 
@@ -36,27 +36,27 @@ async function modelAdd() {
       {
         type: 'input',
         name: 'modelName',
-        message: '请输入模型名称：',
+        message: 'Enter model name:',
       },
       {
         type: 'input',
         name: 'apiKey',
-        message: '请输入apiKey：',
+        message: 'Enter API key:',
       },
       {
         type: 'input',
         name: 'baseURL',
-        message: '请输入baseURL：',
+        message: 'Enter base URL:',
       },
       {
         type: 'input',
         name: 'modelID',
-        message: '请输入模型ID：',
+        message: 'Enter model ID:',
       },
       {
         type: 'list',
         name: 'modelThinking',
-        message: '是否启动思考模式：',
+        message: 'Thinking mode:',
         choices: ['enabled', 'disabled', 'auto'],
       },
     ];
@@ -67,20 +67,20 @@ async function modelAdd() {
     const dbKey = answers.modelName;
     const dbValue = await db.config(dbKey);
     if (dbValue) {
-      console.log(cli.colors.red('模型名称已经存在，请换一个模型名称。'));
+      console.log(cli.colors.red('Model name already exists'));
       return;
     }
 
     // set
     await db.config(dbKey, answers);
-    console.log(cli.colors.blue('模型已添加，目前记录的模型信息有：'));
+    console.log(cli.colors.green('Model added'));
     console.log();
 
     // list
     const all = await db.all();
     console.log(all);
   } catch (e) {
-    console.log(cli.colors.red('设置模型出错。'));
+    console.log(cli.colors.red('Error: Failed to add model'));
     console.log();
     console.log(e);
   }
@@ -93,11 +93,11 @@ async function modelList() {
   try {
     // list
     const all = await db.all();
-    console.log(cli.colors.blue('目前已经添加的模型有：'));
+    console.log(cli.colors.cyan('Configured models:'));
     console.log();
     console.log(all);
   } catch (e) {
-    console.log(cli.colors.red('列出模型出错。'));
+    console.log(cli.colors.red('Error: Failed to list models'));
     console.log();
 
     console.log(e);
@@ -114,7 +114,7 @@ async function modelRemove() {
       {
         type: 'input',
         name: 'modelName',
-        message: '请输入要删除的模型名称：',
+        message: 'Enter model name to remove:',
       },
     ];
     const answers = await cli.ask(questions);
@@ -123,14 +123,14 @@ async function modelRemove() {
     // del
     const dbKey = answers.modelName;
     await db.config(dbKey, null);
-    console.log(cli.colors.blue('模型已删除。'));
+    console.log(cli.colors.green('Model removed'));
     console.log();
 
     // list
     const all = await db.all();
     console.log(all);
   } catch (e) {
-    console.log(cli.colors.red('删除模型出错。'));
+    console.log(cli.colors.red('Error: Failed to remove model'));
     console.log();
 
     console.log(e);
@@ -148,7 +148,7 @@ async function modelDefault() {
       {
         type: 'input',
         name: 'modelName',
-        message: '请输入要设置为默认的模型：',
+        message: 'Enter default model name:',
       },
     ];
     const answers = await cli.ask(questions);
@@ -160,14 +160,14 @@ async function modelDefault() {
 
     // check keys
     if (!keys || !keys.length) {
-      console.log(cli.colors.red('请先添加模型：qllm add'));
+      console.log(cli.colors.red('No models found. Add one first: viho model add'));
       console.log();
       return;
     }
 
     // check model
     if (!keys.includes(answers.modelName)) {
-      console.log(cli.colors.red('没有找到这个模型，已添加模型如下：'));
+      console.log(cli.colors.red('Model not found. Available models:'));
       console.log();
       console.log(all);
       return;
@@ -175,10 +175,10 @@ async function modelDefault() {
 
     // set
     await db.config('default', answers.modelName);
-    console.log(cli.colors.blue(`默认模型设置成功：${answers.modelName}`));
+    console.log(cli.colors.green(`Default model: ${answers.modelName}`));
     console.log();
   } catch (e) {
-    console.log(cli.colors.red('设置默认模型出错。'));
+    console.log(cli.colors.red('Error: Failed to set default model'));
     console.log();
     console.log(e);
   }

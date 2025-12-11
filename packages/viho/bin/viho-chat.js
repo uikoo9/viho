@@ -11,12 +11,12 @@ const db = getDB();
 // cmd
 cli.cmd
   .command('chat [modelName]')
-  .description('开始和一个模型对话')
+  .description('Chat with an AI model')
   .action(async (modelName) => {
     if (!modelName) {
       const defaultModel = await db.config('default');
       if (!defaultModel) {
-        console.log(cli.colors.red('请先执行viho default设置默认模型'));
+        console.log(cli.colors.red('No default model set. Use: viho model default'));
         return;
       }
 
@@ -26,7 +26,7 @@ cli.cmd
     // check
     const model = await db.config(modelName);
     if (!model) {
-      console.log(cli.colors.red(`这个模型不存在：${modelName}`));
+      console.log(cli.colors.red(`Model not found: ${modelName}`));
       return;
     }
 
@@ -41,14 +41,14 @@ cli.cmd
       {
         type: 'editor',
         name: 'content',
-        message: '请输入你的问题：',
+        message: 'Your question:',
       },
     ];
     const answers = await cli.ask(questions);
 
     // answers
     console.log();
-    console.log(cli.colors.gray('=== 你的问题是 ==='));
+    console.log(cli.colors.gray('Question:'));
     console.log(cli.colors.gray(answers.content));
     console.log();
 
@@ -56,7 +56,7 @@ cli.cmd
     const chatOptions = {
       model: model.modelID,
       messages: [
-        { role: 'system', content: '你是人工智能助手' },
+        { role: 'system', content: 'You are a helpful AI assistant' },
         { role: 'user', content: answers.content },
       ],
       thinking: {
@@ -68,7 +68,7 @@ cli.cmd
     const callbackOptions = {
       firstThinkingCallback: () => {
         console.log();
-        console.log(cli.colors.gray('===begin thinking==='));
+        console.log(cli.colors.gray('[Thinking...]'));
         console.log();
       },
       thinkingCallback: (msg) => {
@@ -76,7 +76,7 @@ cli.cmd
       },
       firstContentCallback: () => {
         console.log();
-        console.log('===begin content===');
+        console.log(cli.colors.cyan('[Response]'));
         console.log();
       },
       contentCallback: (msg) => {
@@ -84,11 +84,10 @@ cli.cmd
       },
       endCallback: () => {
         console.log();
-        console.log('end chat');
       },
       errorCallback: (error) => {
         console.log();
-        console.log(cli.colors.red('something error'));
+        console.log(cli.colors.red('Error:'));
         console.log(error);
       },
     };
