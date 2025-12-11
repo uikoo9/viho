@@ -4,12 +4,9 @@ const cli = require('qiao-cli');
 // llm
 const LLM = require('qiao-llm');
 
-// db
-const { getDB } = require('./util.js');
-const db = getDB();
-
 // util
-const { ask } = require('./util.js');
+const { getDB, ask, printLogo } = require('./util.js');
+const db = getDB();
 
 // cmd
 cli.cmd
@@ -38,6 +35,9 @@ cli.cmd
       apiKey: model.apiKey,
       baseURL: model.baseURL,
     });
+
+    // logo
+    printLogo();
 
     await ask(llm, model);
   });

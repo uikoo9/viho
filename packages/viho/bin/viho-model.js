@@ -1,8 +1,8 @@
 // qiao
 const cli = require('qiao-cli');
 
-// db
-const { getDB } = require('./util.js');
+// util
+const { getDB, printLogo } = require('./util.js');
 const db = getDB();
 
 // actions
@@ -91,6 +91,9 @@ async function modelAdd() {
  */
 async function modelList() {
   try {
+    // logo
+    printLogo();
+
     // list
     const all = await db.all();
     console.log(cli.colors.cyan('Configured models:'));

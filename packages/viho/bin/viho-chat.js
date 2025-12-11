@@ -4,12 +4,9 @@ const cli = require('qiao-cli');
 // llm
 const LLM = require('qiao-llm');
 
-// db
-const { getDB } = require('./util.js');
-const db = getDB();
-
 // util
-const { ask } = require('./util.js');
+const { getDB, ask, printLogo } = require('./util.js');
+const db = getDB();
 
 // cmd
 cli.cmd
@@ -38,6 +35,11 @@ cli.cmd
       apiKey: model.apiKey,
       baseURL: model.baseURL,
     });
+
+    // logo
+    printLogo();
+    console.log(cli.colors.cyan(`Welcome to viho chat! Using model: ${modelName}`));
+    console.log(cli.colors.gray('Press Ctrl+C to exit\n'));
 
     // chat
     let keepChatting = true;
