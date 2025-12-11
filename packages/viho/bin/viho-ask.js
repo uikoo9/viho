@@ -10,8 +10,8 @@ const db = getDB();
 
 // cmd
 cli.cmd
-  .command('chat [modelName]')
-  .description('Chat with an AI model')
+  .command('ask [modelName]')
+  .description('Ask a question to an AI model')
   .action(async (modelName) => {
     if (!modelName) {
       const defaultModel = await db.config('default');

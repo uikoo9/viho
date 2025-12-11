@@ -1,6 +1,6 @@
 # viho
 
-A lightweight CLI tool for managing and chatting with AI models.
+A lightweight CLI tool for managing and asking questions to AI models.
 
 [![npm version](https://img.shields.io/npm/v/viho.svg)](https://www.npmjs.com/package/viho)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -8,7 +8,7 @@ A lightweight CLI tool for managing and chatting with AI models.
 ## Features
 
 - Multiple AI model management
-- Interactive chat with streaming responses
+- Interactive Q&A with streaming responses
 - Support for thinking mode (enabled/disabled/auto)
 - Configurable API endpoints (OpenAI, Anthropic, custom providers)
 - Default model configuration
@@ -41,10 +41,10 @@ viho model add
 viho model default
 ```
 
-3. Start chatting:
+3. Start asking questions:
 
 ```bash
-viho chat
+viho ask
 ```
 
 ## Commands
@@ -91,25 +91,25 @@ Set a default model for chat sessions:
 viho model default
 ```
 
-### Chat
+### Ask
 
-#### `viho chat [modelName]`
+#### `viho ask [modelName]`
 
-Start an interactive chat session with an AI model.
+Ask a question to an AI model.
 
 If no model name is provided, uses the default model:
 
 ```bash
-viho chat
+viho ask
 ```
 
 Or specify a model explicitly:
 
 ```bash
-viho chat mymodel
+viho ask mymodel
 ```
 
-The chat interface includes:
+The interface includes:
 
 - Editor-based question input
 - Streaming responses
@@ -176,8 +176,8 @@ viho model add
 # Set it as default
 viho model default
 
-# Start chatting
-viho chat
+# Start asking questions
+viho ask
 ```
 
 ## Dependencies
