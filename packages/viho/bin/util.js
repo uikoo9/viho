@@ -73,6 +73,7 @@ exports.ask = async (llm, model) => {
     },
     endCallback: () => {
       console.log();
+      console.log();
     },
     errorCallback: (error) => {
       console.log();

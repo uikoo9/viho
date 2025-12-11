@@ -1,12 +1,13 @@
 {
   "name": "viho",
   "version": "0.0.4",
-  "description": "A lightweight CLI tool for managing and asking questions to AI models",
+  "description": "A lightweight CLI tool for managing and interacting with AI models",
   "keywords": [
     "ai",
     "llm",
     "qa",
     "ask",
+    "chat",
     "cli",
     "chatgpt",
     "anthropic",
