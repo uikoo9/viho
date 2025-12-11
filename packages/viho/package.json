@@ -1,0 +1,30 @@
+{
+  "name": "viho",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "author": "uikoo9 <uikoo9@qq.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/uikoo9/viho#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uikoo9/viho.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uikoo9/viho/issues"
+  },
+  "bin": {
+    "viho": "./bin/viho.js"
+  },
+  "files": [
+    "bin",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "qiao-cli": "^5.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    }
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "projects": "dependencies",
+        "target": "build"
+      }
+    ]
+  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
+}

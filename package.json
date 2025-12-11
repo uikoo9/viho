@@ -1,0 +1,32 @@
+{
+  "name": "viho",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "prepare": "husky",
+    "build": "lerna run build",
+    "prettier": "qpro prettier",
+    "eslint": "qpro eslint",
+    "test": "lerna run test",
+    "lint": "npm run build && npm run prettier && npm run eslint && npm run test",
+    "postinstall": "npm run lint",
+    "cz": "qpro commitizen",
+    "pb": "lerna publish",
+    "graph": "nx graph",
+    "check": "qpro ncu && lerna exec 'qpro ncu' --concurrency=1",
+    "update": "qpro ncu u && lerna exec 'qpro ncu u' --concurrency=1",
+    "pkg": "qpro pkg ./packages",
+    "dpkg": "qpro pkg ./packages dev"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "husky": "^9.1.7",
+    "lerna": "^9.0.1",
+    "lint-staged": "^16.2.7",
+    "nx": "^22.1.0",
+    "qiao-project": "^5.0.2"
+  }
+}
