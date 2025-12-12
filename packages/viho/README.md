@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.png" alt="viho logo" width="200"/>
+  <img src="https://static-small.vincentqiao.com/viho/logo.png" alt="viho logo" width="200"/>
 </p>
 
 <h1 align="center">viho</h1>

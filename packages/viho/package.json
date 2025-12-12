@@ -33,8 +33,7 @@
     "bin",
     "src",
     "LICENSE",
-    "README.md",
-    "logo.png"
+    "README.md"
   ],
   "engines": {
     "node": ">=18.0.0"
