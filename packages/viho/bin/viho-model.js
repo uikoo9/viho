@@ -58,7 +58,7 @@ async function modelAdd() {
         type: 'list',
         name: 'modelThinking',
         message: 'Thinking mode:',
-        choices: ['enabled', 'disabled', 'auto'],
+        choices: ['enabled', 'disabled'],
       },
     ];
     const answers = await cli.ask(questions);
