@@ -5,7 +5,7 @@ const cli = require('qiao-cli');
 const LLM = require('qiao-llm');
 
 // util
-const { getDB, ask, printLogo } = require('./util.js');
+const { getDB, getModels, printLogo, ask } = require('./util.js');
 const db = getDB();
 
 // cmd
@@ -24,7 +24,8 @@ cli.cmd
     }
 
     // check
-    const model = await db.config(modelName);
+    const models = await getModels(db);
+    const model = models.find((m) => m.modelName === modelName);
     if (!model) {
       console.log(cli.colors.red(`Model not found: ${modelName}`));
       return;
@@ -39,5 +40,6 @@ cli.cmd
     // logo
     printLogo();
 
+    // ask
     await ask(llm, model);
   });

@@ -10,14 +10,8 @@ const cli = require('qiao-cli');
 // db
 const DB = require('qiao-config');
 
-/**
- * getDB
- * @returns
- */
-exports.getDB = () => {
-  const dbPath = path.resolve(os.homedir(), './viho.json');
-  return DB(dbPath);
-};
+// models
+const modelsKey = 'models';
 
 /**
  * printLogo
@@ -33,6 +27,33 @@ exports.printLogo = () => {
   ╚═══╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
     `),
   );
+};
+
+/**
+ * getDB
+ * @returns
+ */
+exports.getDB = () => {
+  const dbPath = path.resolve(os.homedir(), './viho.json');
+  return DB(dbPath);
+};
+
+/**
+ * getModels
+ * @param {*} db
+ * @returns
+ */
+exports.getModels = async (db) => {
+  return (await db.config(modelsKey)) || [];
+};
+
+/**
+ * setModels
+ * @param {*} db
+ * @returns
+ */
+exports.setModels = async (db, models) => {
+  await db.config(modelsKey, models);
 };
 
 /**

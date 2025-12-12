@@ -2,7 +2,7 @@
 const cli = require('qiao-cli');
 
 // util
-const { getDB, printLogo } = require('./util.js');
+const { getDB, printLogo, getModels, setModels } = require('./util.js');
 const db = getDB();
 
 // actions
@@ -64,21 +64,23 @@ async function modelAdd() {
     console.log();
 
     // check
-    const dbKey = answers.modelName;
-    const dbValue = await db.config(dbKey);
-    if (dbValue) {
+    const modelName = answers.modelName;
+    const models = await getModels(db);
+    const isModelExists = models.some((model) => model.modelName === modelName);
+    if (isModelExists) {
       console.log(cli.colors.red('Model name already exists'));
       return;
     }
 
     // set
-    await db.config(dbKey, answers);
+    models.push(answers);
+    await setModels(db, models);
     console.log(cli.colors.green('Model added'));
     console.log();
 
     // list
-    const all = await db.all();
-    console.log(all);
+    const allModels = await getModels(db);
+    console.log(allModels);
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to add model'));
     console.log();
@@ -95,10 +97,10 @@ async function modelList() {
     printLogo();
 
     // list
-    const all = await db.all();
+    const models = await getModels(db);
     console.log(cli.colors.cyan('Configured models:'));
     console.log();
-    console.log(all);
+    console.log(models);
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to list models'));
     console.log();
@@ -124,14 +126,34 @@ async function modelRemove() {
     console.log();
 
     // del
-    const dbKey = answers.modelName;
-    await db.config(dbKey, null);
+    const models = await getModels(db);
+    const modelNameToRemove = answers.modelName;
+
+    // check if model exists
+    const modelExists = models.some((model) => model.modelName === modelNameToRemove);
+    if (!modelExists) {
+      console.log(cli.colors.red(`Model not found: ${modelNameToRemove}`));
+      console.log();
+      return;
+    }
+
+    const newModels = models.filter((model) => model.modelName !== modelNameToRemove);
+    await setModels(db, newModels);
+
+    // clear default if removed model was default
+    const defaultModel = await db.config('default');
+    if (defaultModel === modelNameToRemove) {
+      await db.config('default', null);
+      console.log(cli.colors.yellow('Removed model was set as default. Please set a new default.'));
+      console.log();
+    }
+
     console.log(cli.colors.green('Model removed'));
     console.log();
 
     // list
-    const all = await db.all();
-    console.log(all);
+    const allModels = await getModels(db);
+    console.log(allModels);
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to remove model'));
     console.log();
@@ -158,8 +180,8 @@ async function modelDefault() {
     console.log();
 
     // get keys
-    const all = await db.all();
-    const keys = Object.keys(all);
+    const models = await getModels(db);
+    const keys = models.map((model) => model.modelName);
 
     // check keys
     if (!keys || !keys.length) {
@@ -172,7 +194,7 @@ async function modelDefault() {
     if (!keys.includes(answers.modelName)) {
       console.log(cli.colors.red('Model not found. Available models:'));
       console.log();
-      console.log(all);
+      console.log(models);
       return;
     }
 
