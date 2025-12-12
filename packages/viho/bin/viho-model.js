@@ -12,7 +12,7 @@ const actions = ['add', 'list', 'remove', 'default'];
 // model
 cli.cmd
   .command('model <action>')
-  .description('Manage AI models')
+  .description('Manage AI model configurations (add, list, remove, default)')
   .action((action) => {
     if (!actions.includes(action)) {
       console.log(cli.colors.red('Invalid action. Use: add, list, remove, default'));

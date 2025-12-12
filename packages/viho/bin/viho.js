@@ -12,8 +12,8 @@ require('./viho-ask.js');
 require('./viho-chat.js');
 require('./viho-version.js');
 
-// print logo if no args
-if (process.argv.length === 2) {
+// print logo if no args or help
+if (process.argv.length === 2 || process.argv.includes('-h') || process.argv.includes('--help')) {
   printLogo();
 }
 
