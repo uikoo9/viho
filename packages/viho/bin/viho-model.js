@@ -76,12 +76,8 @@ async function modelAdd() {
     // set
     models.push(answers);
     await setModels(db, models);
-    console.log(cli.colors.green('Model added'));
+    console.log(cli.colors.green('Model added successfully!'));
     console.log();
-
-    // list
-    const allModels = await getModels(db);
-    console.log(allModels);
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to add model'));
     console.log();
@@ -99,9 +95,31 @@ async function modelList() {
 
     // list
     const models = await getModels(db);
+    const defaultModel = await db.config('default');
+
     console.log(cli.colors.cyan('Configured models:'));
     console.log();
-    console.log(models);
+
+    if (!models || models.length === 0) {
+      console.log(cli.colors.gray('No models configured. Use: viho model add'));
+      console.log();
+      return;
+    }
+
+    models.forEach((model) => {
+      const isDefault = model.modelName === defaultModel;
+      const defaultTag = isDefault ? cli.colors.green(' (default)') : '';
+      console.log(cli.colors.white(`  • ${model.modelName}${defaultTag}`));
+      console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
+      console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
+      console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
+      console.log();
+    });
+
+    if (!defaultModel) {
+      console.log(cli.colors.yellow('No default model set. Use: viho model default'));
+      console.log();
+    }
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to list models'));
     console.log();
@@ -149,12 +167,8 @@ async function modelRemove() {
       console.log();
     }
 
-    console.log(cli.colors.green('Model removed'));
+    console.log(cli.colors.green('Model removed successfully!'));
     console.log();
-
-    // list
-    const allModels = await getModels(db);
-    console.log(allModels);
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to remove model'));
     console.log();
@@ -195,13 +209,16 @@ async function modelDefault() {
     if (!keys.includes(answers.modelName)) {
       console.log(cli.colors.red('Model not found. Available models:'));
       console.log();
-      console.log(models);
+      models.forEach((model) => {
+        console.log(cli.colors.gray(`  • ${model.modelName}`));
+      });
+      console.log();
       return;
     }
 
     // set
     await db.config('default', answers.modelName);
-    console.log(cli.colors.green(`Default model: ${answers.modelName}`));
+    console.log(cli.colors.green(`Default model set to: ${answers.modelName}`));
     console.log();
   } catch (e) {
     console.log(cli.colors.red('Error: Failed to set default model'));

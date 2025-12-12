@@ -74,12 +74,37 @@ You'll be prompted to enter:
 viho model add
 ```
 
+After adding a model, it will be available for use with `viho ask` and `viho chat` commands.
+
 #### `viho model list`
 
-List all configured models:
+List all configured models with detailed information.
 
 ```bash
 viho model list
+```
+
+This command displays:
+
+- Model name with a `(default)` tag for the default model
+- Model ID
+- Base URL
+- Thinking mode setting
+
+**Example output:**
+
+```
+Configured models:
+
+  • deepseek (default)
+    Model ID: ep-20250822181529-2gg27
+    Base URL: https://ark.cn-beijing.volces.com/api/v3
+    Thinking: auto
+
+  • kimi
+    Model ID: kimi-k2-thinking
+    Base URL: https://api.moonshot.cn/v1
+    Thinking: enabled
 ```
 
 #### `viho model remove`
@@ -90,13 +115,17 @@ Remove a model configuration:
 viho model remove
 ```
 
+You'll be prompted to enter the model name to remove. If the removed model was set as default, you'll need to set a new default model.
+
 #### `viho model default`
 
-Set a default model for chat sessions:
+Set a default model for chat and ask sessions:
 
 ```bash
 viho model default
 ```
+
+The default model will be used when you run `viho ask` or `viho chat` without specifying a model name.
 
 ### Ask
 
