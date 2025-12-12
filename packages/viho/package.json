@@ -1,6 +1,6 @@
 {
   "name": "viho",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A lightweight CLI tool for managing and interacting with AI models",
   "keywords": [
     "ai",
