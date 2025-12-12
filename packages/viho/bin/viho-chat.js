@@ -6,7 +6,7 @@ const LLM = require('qiao-llm');
 
 // util
 const { ask } = require('../src/llm.js');
-const { getModels } = require('../src/model.js');
+const { getModelByName } = require('../src/model.js');
 const { getDB, printLogo } = require('../src/util.js');
 const db = getDB();
 
@@ -15,23 +15,9 @@ cli.cmd
   .command('chat [modelName]')
   .description('Start a continuous chat session with an AI model')
   .action(async (modelName) => {
-    if (!modelName) {
-      const defaultModel = await db.config('default');
-      if (!defaultModel) {
-        console.log(cli.colors.red('No default model set. Use: viho model default'));
-        return;
-      }
-
-      modelName = defaultModel;
-    }
-
-    // check
-    const models = await getModels(db);
-    const model = models.find((m) => m.modelName === modelName);
-    if (!model) {
-      console.log(cli.colors.red(`Model not found: ${modelName}`));
-      return;
-    }
+    // model
+    const model = await getModelByName(db, modelName);
+    if (!model) return;
 
     // init
     const llm = LLM({
@@ -41,7 +27,7 @@ cli.cmd
 
     // logo
     printLogo();
-    console.log(cli.colors.cyan(`Welcome to viho chat! Using model: ${modelName}`));
+    console.log(cli.colors.cyan(`Welcome to viho chat! Using model: ${model.modelName}`));
     console.log(cli.colors.gray('Press Ctrl+C to exit\n'));
 
     // chat

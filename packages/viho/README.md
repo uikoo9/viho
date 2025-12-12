@@ -156,13 +156,15 @@ Configuration is stored in `~/viho.json`. You can manage all settings through th
 
 ```json
 {
-  "mymodel": {
-    "modelName": "mymodel",
-    "apiKey": "your-api-key",
-    "baseURL": "https://api.openai.com/v1",
-    "modelID": "gpt-4",
-    "modelThinking": "auto"
-  },
+  "models": [
+    {
+      "modelName": "mymodel",
+      "apiKey": "your-api-key",
+      "baseURL": "https://api.openai.com/v1",
+      "modelID": "gpt-4",
+      "modelThinking": "auto"
+    }
+  ],
   "default": "mymodel"
 }
 ```
