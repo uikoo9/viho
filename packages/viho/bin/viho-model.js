@@ -2,7 +2,8 @@
 const cli = require('qiao-cli');
 
 // util
-const { getDB, printLogo, getModels, setModels } = require('./util.js');
+const { getModels, setModels } = require('../src/model.js');
+const { getDB, printLogo } = require('../src/util.js');
 const db = getDB();
 
 // actions

@@ -5,7 +5,9 @@ const cli = require('qiao-cli');
 const LLM = require('qiao-llm');
 
 // util
-const { getDB, getModels, printLogo, ask } = require('./util.js');
+const { ask } = require('../src/llm.js');
+const { getModels } = require('../src/model.js');
+const { getDB, printLogo } = require('../src/util.js');
 const db = getDB();
 
 // cmd
