@@ -18,7 +18,8 @@
     "check": "qpro ncu && lerna exec 'qpro ncu' --concurrency=1",
     "update": "qpro ncu u && lerna exec 'qpro ncu u' --concurrency=1",
     "pkg": "qpro pkg ./packages",
-    "dpkg": "qpro pkg ./packages dev"
+    "dpkg": "qpro pkg ./packages dev",
+    "expert:update": "npm run update -w viho-expert"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
