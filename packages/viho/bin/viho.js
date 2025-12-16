@@ -10,6 +10,7 @@ const { printLogo } = require('../src/util.js');
 require('./viho-model.js');
 require('./viho-ask.js');
 require('./viho-chat.js');
+require('./viho-expert.js');
 require('./viho-version.js');
 
 // print logo if no args or help
