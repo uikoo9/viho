@@ -6,15 +6,15 @@ const { printLogo } = require('../src/util.js');
 const { experts } = require('../src/experts/experts.js');
 
 // actions
-const actions = ['list'];
+const actions = ['list', ...experts.map((e) => e.name)];
 
 // model
 cli.cmd
   .command('expert <action>')
-  .description('')
+  .description('Manage expert resources (list, daisyui, ...)')
   .action((action) => {
     if (!actions.includes(action)) {
-      console.log(cli.colors.red('Invalid action. Use: add, list, remove, default'));
+      console.log(cli.colors.red(`Invalid action. Use: ${actions.join(', ')}`));
       return;
     }
 
