@@ -1,9 +1,14 @@
 // qiao
 const cli = require('qiao-cli');
 
+// llm
+const LLM = require('qiao-llm');
+
 // util
-const { printLogo } = require('../src/util.js');
+const { expertAsk } = require('../src/llm.js');
 const { experts } = require('../src/experts/experts.js');
+const { getDB, printLogo, preLLMAsk } = require('../src/util.js');
+const db = getDB();
 
 // actions
 const actions = ['list', ...experts.map((e) => e.name)];
@@ -19,7 +24,12 @@ cli.cmd
     }
 
     // actions
-    if (action === 'list') expertList();
+    if (action === 'list') {
+      expertList();
+    } else {
+      // all other actions are expert names
+      expertAskByName(action);
+    }
   });
 
 /**
@@ -43,4 +53,26 @@ async function expertList() {
     console.log(cli.colors.gray(`    URL: ${expert.url}`));
     console.log();
   });
+}
+
+/**
+ * expertAskByName
+ * @param {*} expertName
+ */
+async function expertAskByName(expertName) {
+  // pre ask
+  const model = await preLLMAsk(`expert (${expertName})`, db);
+  if (!model) return;
+
+  // init
+  const llm = LLM({
+    apiKey: model.apiKey,
+    baseURL: model.baseURL,
+  });
+
+  // chat
+  let keepChatting = true;
+  while (keepChatting) {
+    await expertAsk(llm, model, expertName);
+  }
 }
