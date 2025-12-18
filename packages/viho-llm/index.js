@@ -1,6 +1,7 @@
 'use strict';
 
 var genai = require('@google/genai');
+var mime = require('mime-types');
 var qiao_log_js = require('qiao.log.js');
 
 // gemini
@@ -144,10 +145,6 @@ async function cacheAdd(client, modelName, cacheOptions) {
     logger.error(methodName, 'need cacheOptions.filePath');
     return;
   }
-  if (!cacheOptions.mimeType) {
-    logger.error(methodName, 'need cacheOptions.mimeType');
-    return;
-  }
   if (!cacheOptions.systemPrompt) {
     logger.error(methodName, 'need cacheOptions.systemPrompt');
     return;
@@ -161,11 +158,16 @@ async function cacheAdd(client, modelName, cacheOptions) {
     return;
   }
 
+  // const
+  const mimeType = mime.lookup(cacheOptions.filePath);
+  logger.info(methodName, 'cacheOptions', cacheOptions);
+  logger.info(methodName, 'mimeType', mimeType);
+
   try {
     // upload doc
     const doc = await client.files.upload({
       file: cacheOptions.filePath,
-      config: { mimeType: cacheOptions.mimeType },
+      config: { mimeType: mimeType },
     });
     logger.info(methodName, 'doc.name', doc.name);
 
