@@ -39,10 +39,13 @@ const Gemini = (options) => {
   gemini.chat = async (chatOptions) => {
     return await chat(gemini.client, options.modelName, chatOptions);
   };
-
-  // chat with streaming
   gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
     return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+  };
+
+  // cache
+  gemini.cacheAdd = async (systemPrompt, content) => {
+    return await cacheAdd(gemini.client, options.modelName, systemPrompt, content);
   };
 
   // r
@@ -125,6 +128,35 @@ async function chatWithStreaming(client, modelName, chatOptions, callbackOptions
     if (endCallback) endCallback();
   } catch (error) {
     if (errorCallback) errorCallback(error);
+  }
+}
+
+// cache add
+async function cacheAdd(client, modelName, systemPrompt, content) {
+  const methodName = 'Gemini - cacheAdd';
+
+  // check
+  if (!systemPrompt) {
+    logger.info(methodName, 'need systemPrompt');
+    return;
+  }
+  if (!content) {
+    logger.info(methodName, 'need content');
+    return;
+  }
+
+  try {
+    const cache = await client.caches.create({
+      model: modelName,
+      config: {
+        systemInstruction: systemPrompt,
+        contents: genai.createUserContent(content),
+      },
+    });
+
+    return cache;
+  } catch (error) {
+    logger.error(methodName, 'error', error);
   }
 }
 

@@ -38,6 +38,47 @@ const response = await gemini.chat({
 console.log(response);
 ```
 
+### Streaming Example
+
+```javascript
+import { Gemini } from 'viho-llm';
+
+// Initialize Gemini client
+const gemini = Gemini({
+  apiKey: 'your-google-api-key',
+  modelName: 'gemini-pro',
+});
+
+// Send a chat message with streaming
+await gemini.chatWithStreaming(
+  {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: 'Write a long story about AI' }],
+      },
+    ],
+  },
+  {
+    beginCallback: () => {
+      console.log('Stream started...');
+    },
+    firstContentCallback: () => {
+      console.log('First chunk received!');
+    },
+    contentCallback: (content) => {
+      process.stdout.write(content); // Print each chunk as it arrives
+    },
+    endCallback: () => {
+      console.log('\nStream ended.');
+    },
+    errorCallback: (error) => {
+      console.error('Error:', error);
+    },
+  },
+);
+```
+
 ## API Reference
 
 ### `Gemini(options)`
@@ -81,6 +122,54 @@ const response = await gemini.chat({
     },
   ],
 });
+```
+
+##### `client.chatWithStreaming(chatOptions, callbackOptions)`
+
+Sends a chat request to the Gemini API with streaming response.
+
+**Parameters:**
+
+- `chatOptions` (Object)
+  - `contents` (Array) **required** - Array of message objects
+    - `role` (string) - Either 'user' or 'model'
+    - `parts` (Array) - Array of content parts
+      - `text` (string) - The text content
+
+- `callbackOptions` (Object) - Callback functions for handling stream events
+  - `beginCallback` (Function) - Called when the stream begins
+  - `contentCallback` (Function) - Called for each content chunk received
+    - Parameters: `content` (string) - The text chunk
+  - `firstContentCallback` (Function) - Called when the first content chunk is received
+  - `endCallback` (Function) - Called when the stream ends successfully
+  - `errorCallback` (Function) - Called if an error occurs
+    - Parameters: `error` (Error) - The error object
+
+**Returns:**
+
+- (Promise\<void\>) - Resolves when streaming completes
+
+**Example:**
+
+```javascript
+await gemini.chatWithStreaming(
+  {
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: 'Explain quantum computing' }],
+      },
+    ],
+  },
+  {
+    contentCallback: (chunk) => {
+      console.log('Received:', chunk);
+    },
+    endCallback: () => {
+      console.log('Done!');
+    },
+  },
+);
 ```
 
 ## License
