@@ -39,6 +39,11 @@ export const Gemini = (options) => {
     return await chat(gemini.client, options.modelName, chatOptions);
   };
 
+  // chat with streaming
+  gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
+    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+  };
+
   // r
   return gemini;
 };
@@ -70,5 +75,54 @@ async function chat(client, modelName, chatOptions) {
     return response.text;
   } catch (error) {
     logger.error(methodName, 'error', error);
+  }
+}
+
+async function chatWithStreaming(client, modelName, chatOptions, callbackOptions) {
+  const methodName = 'Gemini - chatWithStreaming';
+
+  // check
+  if (!chatOptions) {
+    logger.info(methodName, 'need chatOptions');
+    return;
+  }
+  if (!chatOptions.contents) {
+    logger.info(methodName, 'need chatOptions.contents');
+    return;
+  }
+
+  // callback
+  const beginCallback = callbackOptions.beginCallback;
+  const endCallback = callbackOptions.endCallback;
+  const errorCallback = callbackOptions.errorCallback;
+  const contentCallback = callbackOptions.contentCallback;
+  const firstContentCallback = callbackOptions.firstContentCallback;
+
+  try {
+    if (beginCallback) beginCallback();
+    const response = await client.models.generateContentStream({
+      model: modelName,
+      contents: chatOptions.contents,
+    });
+
+    // go
+    let firstContent = true;
+    for await (const chunk of response) {
+      // content
+      const content = chunk.text;
+      if (content && contentCallback) {
+        if (firstContent && firstContentCallback) {
+          firstContent = false;
+          firstContentCallback();
+        }
+
+        contentCallback(content);
+      }
+    }
+
+    // end
+    if (endCallback) endCallback();
+  } catch (error) {
+    if (errorCallback) errorCallback(error);
   }
 }
