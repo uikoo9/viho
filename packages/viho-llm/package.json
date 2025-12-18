@@ -1,0 +1,63 @@
+{
+  "name": "viho-llm",
+  "version": "0.1.0",
+  "description": "Utility library for working with Google Gemini AI, providing common tools and helpers for AI interactions",
+  "keywords": [
+    "llm",
+    "ai",
+    "gemini",
+    "google-ai",
+    "google-gemini",
+    "genai",
+    "ai-tools",
+    "language-model",
+    "ai-utilities",
+    "viho"
+  ],
+  "author": "uikoo9 <uikoo9@qq.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/uikoo9/viho#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uikoo9/viho.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uikoo9/viho/issues"
+  },
+  "main": "index.js",
+  "module": "src/index.js",
+  "sideEffects": false,
+  "files": [
+    "src",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "qpro rollup ./rollup.config.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.34.0",
+    "qiao.log.js": "^3.7.5"
+  },
+  "nx": {
+    "namedInputs": {
+      "default": [
+        "{projectRoot}/src/**/*"
+      ]
+    },
+    "targets": {
+      "build": {
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/index.js"
+        ]
+      }
+    }
+  }
+}
