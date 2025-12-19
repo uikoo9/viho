@@ -131,6 +131,14 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
   const methodName = 'cacheAdd';
 
   // check
+  if (!client) {
+    logger$2.error(methodName, 'need client');
+    return;
+  }
+  if (!modelName) {
+    logger$2.error(methodName, 'need modelName');
+    return;
+  }
   if (!cacheOptions) {
     logger$2.error(methodName, 'need cacheOptions');
     return;
@@ -170,6 +178,34 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
     });
 
     return cache;
+  } catch (error) {
+    logger$2.error(methodName, 'error', error);
+  }
+};
+
+/**
+ * cacheList
+ * @param {*} client
+ * @returns
+ */
+const cacheList = async (client) => {
+  const methodName = 'cacheList';
+
+  // check
+  if (!client) {
+    logger$2.error(methodName, 'need client');
+    return;
+  }
+
+  // cache list
+  try {
+    const cacheList = await client.caches.list();
+    const cacheObjs = cacheList?.pageInternal?.map((contentCache) => ({
+      name: contentCache.name,
+      displayName: contentCache.displayName,
+    }));
+
+    return cacheObjs;
   } catch (error) {
     logger$2.error(methodName, 'error', error);
   }
@@ -266,6 +302,9 @@ const GeminiVertex = (options) => {
   // cache
   gemini.cacheAdd = async (cacheOptions) => {
     return await cacheAdd(gemini.client, options.modelName, cacheOptions);
+  };
+  gemini.cacheList = async () => {
+    return await cacheList(gemini.client);
   };
 
   // r

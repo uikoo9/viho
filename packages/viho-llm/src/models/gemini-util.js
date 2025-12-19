@@ -132,6 +132,14 @@ export const cacheAdd = async (client, modelName, cacheOptions) => {
   const methodName = 'cacheAdd';
 
   // check
+  if (!client) {
+    logger.error(methodName, 'need client');
+    return;
+  }
+  if (!modelName) {
+    logger.error(methodName, 'need modelName');
+    return;
+  }
   if (!cacheOptions) {
     logger.error(methodName, 'need cacheOptions');
     return;
@@ -171,6 +179,34 @@ export const cacheAdd = async (client, modelName, cacheOptions) => {
     });
 
     return cache;
+  } catch (error) {
+    logger.error(methodName, 'error', error);
+  }
+};
+
+/**
+ * cacheList
+ * @param {*} client
+ * @returns
+ */
+export const cacheList = async (client) => {
+  const methodName = 'cacheList';
+
+  // check
+  if (!client) {
+    logger.error(methodName, 'need client');
+    return;
+  }
+
+  // cache list
+  try {
+    const cacheList = await client.caches.list();
+    const cacheObjs = cacheList?.pageInternal?.map((contentCache) => ({
+      name: contentCache.name,
+      displayName: contentCache.displayName,
+    }));
+
+    return cacheObjs;
   } catch (error) {
     logger.error(methodName, 'error', error);
   }
