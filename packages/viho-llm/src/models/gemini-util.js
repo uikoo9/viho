@@ -37,10 +37,16 @@ export const chat = async (client, modelName, chatOptions) => {
   }
 
   try {
-    const response = await client.models.generateContent({
-      model: modelName,
-      contents: chatOptions.contents,
-    });
+    // options
+    const options = Object.assign(
+      {
+        model: modelName,
+      },
+      chatOptions,
+    );
+
+    // gen
+    const response = await client.models.generateContent(options);
     if (!response || !response.text) {
       logger.error(methodName, 'invalid response');
       return;
@@ -93,11 +99,19 @@ export const chatWithStreaming = async (client, modelName, chatOptions, callback
   const firstContentCallback = callbackOptions.firstContentCallback;
 
   try {
+    // begin
     if (beginCallback) beginCallback();
-    const response = await client.models.generateContentStream({
-      model: modelName,
-      contents: chatOptions.contents,
-    });
+
+    // options
+    const options = Object.assign(
+      {
+        model: modelName,
+      },
+      chatOptions,
+    );
+
+    // gen
+    const response = await client.models.generateContentStream(options);
 
     // go
     let firstContent = true;
