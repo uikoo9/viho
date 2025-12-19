@@ -2,7 +2,7 @@
 import { GoogleGenAI } from '@google/genai';
 
 // util
-import { chat, chatWithStreaming, cacheAdd, cacheList } from './gemini-util.js';
+import { chat, chatWithStreaming, cacheAdd, cacheList, cacheUpdate } from './gemini-util.js';
 
 // Logger
 import { Logger } from 'qiao.log.js';
@@ -56,6 +56,9 @@ export const GeminiVertex = (options) => {
   };
   gemini.cacheList = async () => {
     return await cacheList(gemini.client);
+  };
+  gemini.cacheUpdate = async (cacheName, cacheOptions) => {
+    return await cacheUpdate(gemini.client, cacheName, cacheOptions);
   };
 
   // r

@@ -225,6 +225,43 @@ const cacheList = async (client) => {
   }
 };
 
+/**
+ * cacheUpdate
+ * @param {*} client
+ * @param {*} cacheName
+ * @param {*} cacheOptions
+ * @returns
+ */
+const cacheUpdate = async (client, cacheName, cacheOptions) => {
+  const methodName = 'cacheUpdate';
+
+  // check
+  if (!client) {
+    logger$2.error(methodName, 'need client');
+    return;
+  }
+  if (!cacheName) {
+    logger$2.error(methodName, 'need cacheName');
+    return;
+  }
+  if (!cacheOptions) {
+    logger$2.error(methodName, 'need cacheOptions');
+    return;
+  }
+
+  // cache update
+  try {
+    const res = await client.caches.update({
+      name: cacheName,
+      config: cacheOptions,
+    });
+
+    return res;
+  } catch (error) {
+    logger$2.error(methodName, 'error', error);
+  }
+};
+
 // gemini
 const logger$1 = qiao_log_js.Logger('gemini-api.js');
 
@@ -319,6 +356,9 @@ const GeminiVertex = (options) => {
   };
   gemini.cacheList = async () => {
     return await cacheList(gemini.client);
+  };
+  gemini.cacheUpdate = async (cacheName, cacheOptions) => {
+    return await cacheUpdate(gemini.client, cacheName, cacheOptions);
   };
 
   // r

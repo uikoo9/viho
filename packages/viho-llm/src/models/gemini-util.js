@@ -225,3 +225,40 @@ export const cacheList = async (client) => {
     logger.error(methodName, 'error', error);
   }
 };
+
+/**
+ * cacheUpdate
+ * @param {*} client
+ * @param {*} cacheName
+ * @param {*} cacheOptions
+ * @returns
+ */
+export const cacheUpdate = async (client, cacheName, cacheOptions) => {
+  const methodName = 'cacheUpdate';
+
+  // check
+  if (!client) {
+    logger.error(methodName, 'need client');
+    return;
+  }
+  if (!cacheName) {
+    logger.error(methodName, 'need cacheName');
+    return;
+  }
+  if (!cacheOptions) {
+    logger.error(methodName, 'need cacheOptions');
+    return;
+  }
+
+  // cache update
+  try {
+    const res = await client.caches.update({
+      name: cacheName,
+      config: cacheOptions,
+    });
+
+    return res;
+  } catch (error) {
+    logger.error(methodName, 'error', error);
+  }
+};
