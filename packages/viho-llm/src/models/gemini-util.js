@@ -1,64 +1,32 @@
 // gemini
-import { GoogleGenAI, createUserContent, createPartFromUri } from '@google/genai';
+import { createUserContent, createPartFromUri } from '@google/genai';
 
 // mime
 import mime from 'mime-types';
 
 // Logger
 import { Logger } from 'qiao.log.js';
-const logger = Logger('viho-llm');
+const logger = Logger('gemini-util.js');
 
 /**
- * Gemini
- * @param {*} options
+ * chat
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} chatOptions
  * @returns
  */
-export const Gemini = (options) => {
-  const methodName = 'Gemini';
+export const chat = async (client, modelName, chatOptions) => {
+  const methodName = 'chat';
 
   // check
-  if (!options) {
-    logger.error(methodName, 'need options');
+  if (!client) {
+    logger.error(methodName, 'need client');
     return;
   }
-  if (!options.apiKey) {
-    logger.error(methodName, 'need options.apiKey');
+  if (!modelName) {
+    logger.error(methodName, 'need modelName');
     return;
   }
-  if (!options.modelName) {
-    logger.error(methodName, 'need options.modelName');
-    return;
-  }
-
-  // gemini
-  const gemini = {};
-  gemini.client = new GoogleGenAI({
-    vertexai: true,
-    apiKey: options.apiKey,
-  });
-
-  // chat
-  gemini.chat = async (chatOptions) => {
-    return await chat(gemini.client, options.modelName, chatOptions);
-  };
-  gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
-    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
-  };
-
-  // cache
-  gemini.cacheAdd = async (cacheOptions) => {
-    return await cacheAdd(gemini.client, options.modelName, cacheOptions);
-  };
-
-  // r
-  return gemini;
-};
-
-// chat
-async function chat(client, modelName, chatOptions) {
-  const methodName = 'Gemini - chat';
-
-  // check
   if (!chatOptions) {
     logger.error(methodName, 'need chatOptions');
     return;
@@ -82,18 +50,38 @@ async function chat(client, modelName, chatOptions) {
   } catch (error) {
     logger.error(methodName, 'error', error);
   }
-}
+};
 
-async function chatWithStreaming(client, modelName, chatOptions, callbackOptions) {
-  const methodName = 'Gemini - chatWithStreaming';
+/**
+ * chatWithStreaming
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} chatOptions
+ * @param {*} callbackOptions
+ * @returns
+ */
+export const chatWithStreaming = async (client, modelName, chatOptions, callbackOptions) => {
+  const methodName = 'chatWithStreaming';
 
   // check
+  if (!client) {
+    logger.error(methodName, 'need client');
+    return;
+  }
+  if (!modelName) {
+    logger.error(methodName, 'need modelName');
+    return;
+  }
   if (!chatOptions) {
     logger.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
     logger.error(methodName, 'need chatOptions.contents');
+    return;
+  }
+  if (!callbackOptions) {
+    logger.error(methodName, 'need callbackOptions');
     return;
   }
 
@@ -131,19 +119,25 @@ async function chatWithStreaming(client, modelName, chatOptions, callbackOptions
   } catch (error) {
     if (errorCallback) errorCallback(error);
   }
-}
+};
 
-// cache add
-async function cacheAdd(client, modelName, cacheOptions) {
-  const methodName = 'Gemini - cacheAdd';
+/**
+ * cacheAdd
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} cacheOptions
+ * @returns
+ */
+export const cacheAdd = async (client, modelName, cacheOptions) => {
+  const methodName = 'cacheAdd';
 
   // check
   if (!cacheOptions) {
     logger.error(methodName, 'need cacheOptions');
     return;
   }
-  if (!cacheOptions.filePath) {
-    logger.error(methodName, 'need cacheOptions.filePath');
+  if (!cacheOptions.gsPath) {
+    logger.error(methodName, 'need cacheOptions.gsPath');
     return;
   }
   if (!cacheOptions.systemPrompt) {
@@ -160,23 +154,16 @@ async function cacheAdd(client, modelName, cacheOptions) {
   }
 
   // const
-  const mimeType = mime.lookup(cacheOptions.filePath);
+  const mimeType = mime.lookup(cacheOptions.gsPath);
   logger.info(methodName, 'cacheOptions', cacheOptions);
   logger.info(methodName, 'mimeType', mimeType);
 
   try {
-    // upload doc
-    const doc = await client.files.upload({
-      file: cacheOptions.filePath,
-      config: { mimeType: mimeType },
-    });
-    logger.info(methodName, 'doc.name', doc.name);
-
     // cache add
     const cache = await client.caches.create({
       model: modelName,
       config: {
-        contents: createUserContent(createPartFromUri(doc.uri, doc.mimeType)),
+        contents: createUserContent(createPartFromUri(cacheOptions.gsPath, mimeType)),
         systemInstruction: cacheOptions.systemPrompt,
         displayName: cacheOptions.cacheName,
         ttl: cacheOptions.cacheTTL,
@@ -187,4 +174,4 @@ async function cacheAdd(client, modelName, cacheOptions) {
   } catch (error) {
     logger.error(methodName, 'error', error);
   }
-}
+};

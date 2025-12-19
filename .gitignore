@@ -178,3 +178,4 @@ dist
 
 ## -- projects --
 .nx
+packages/viho-llm/test.js

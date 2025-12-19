@@ -5,65 +5,33 @@ var mime = require('mime-types');
 var qiao_log_js = require('qiao.log.js');
 
 // gemini
-const logger = qiao_log_js.Logger('viho-llm');
+const logger$2 = qiao_log_js.Logger('gemini-util.js');
 
 /**
- * Gemini
- * @param {*} options
+ * chat
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} chatOptions
  * @returns
  */
-const Gemini = (options) => {
-  const methodName = 'Gemini';
+const chat = async (client, modelName, chatOptions) => {
+  const methodName = 'chat';
 
   // check
-  if (!options) {
-    logger.error(methodName, 'need options');
+  if (!client) {
+    logger$2.error(methodName, 'need client');
     return;
   }
-  if (!options.apiKey) {
-    logger.error(methodName, 'need options.apiKey');
+  if (!modelName) {
+    logger$2.error(methodName, 'need modelName');
     return;
   }
-  if (!options.modelName) {
-    logger.error(methodName, 'need options.modelName');
-    return;
-  }
-
-  // gemini
-  const gemini = {};
-  gemini.client = new genai.GoogleGenAI({
-    vertexai: true,
-    apiKey: options.apiKey,
-  });
-
-  // chat
-  gemini.chat = async (chatOptions) => {
-    return await chat(gemini.client, options.modelName, chatOptions);
-  };
-  gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
-    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
-  };
-
-  // cache
-  gemini.cacheAdd = async (cacheOptions) => {
-    return await cacheAdd(gemini.client, options.modelName, cacheOptions);
-  };
-
-  // r
-  return gemini;
-};
-
-// chat
-async function chat(client, modelName, chatOptions) {
-  const methodName = 'Gemini - chat';
-
-  // check
   if (!chatOptions) {
-    logger.error(methodName, 'need chatOptions');
+    logger$2.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger.error(methodName, 'need chatOptions.contents');
+    logger$2.error(methodName, 'need chatOptions.contents');
     return;
   }
 
@@ -73,26 +41,46 @@ async function chat(client, modelName, chatOptions) {
       contents: chatOptions.contents,
     });
     if (!response || !response.text) {
-      logger.error(methodName, 'invalid response');
+      logger$2.error(methodName, 'invalid response');
       return;
     }
 
     return response.text;
   } catch (error) {
-    logger.error(methodName, 'error', error);
+    logger$2.error(methodName, 'error', error);
   }
-}
+};
 
-async function chatWithStreaming(client, modelName, chatOptions, callbackOptions) {
-  const methodName = 'Gemini - chatWithStreaming';
+/**
+ * chatWithStreaming
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} chatOptions
+ * @param {*} callbackOptions
+ * @returns
+ */
+const chatWithStreaming = async (client, modelName, chatOptions, callbackOptions) => {
+  const methodName = 'chatWithStreaming';
 
   // check
+  if (!client) {
+    logger$2.error(methodName, 'need client');
+    return;
+  }
+  if (!modelName) {
+    logger$2.error(methodName, 'need modelName');
+    return;
+  }
   if (!chatOptions) {
-    logger.error(methodName, 'need chatOptions');
+    logger$2.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger.error(methodName, 'need chatOptions.contents');
+    logger$2.error(methodName, 'need chatOptions.contents');
+    return;
+  }
+  if (!callbackOptions) {
+    logger$2.error(methodName, 'need callbackOptions');
     return;
   }
 
@@ -130,52 +118,51 @@ async function chatWithStreaming(client, modelName, chatOptions, callbackOptions
   } catch (error) {
     if (errorCallback) errorCallback(error);
   }
-}
+};
 
-// cache add
-async function cacheAdd(client, modelName, cacheOptions) {
-  const methodName = 'Gemini - cacheAdd';
+/**
+ * cacheAdd
+ * @param {*} client
+ * @param {*} modelName
+ * @param {*} cacheOptions
+ * @returns
+ */
+const cacheAdd = async (client, modelName, cacheOptions) => {
+  const methodName = 'cacheAdd';
 
   // check
   if (!cacheOptions) {
-    logger.error(methodName, 'need cacheOptions');
+    logger$2.error(methodName, 'need cacheOptions');
     return;
   }
-  if (!cacheOptions.filePath) {
-    logger.error(methodName, 'need cacheOptions.filePath');
+  if (!cacheOptions.gsPath) {
+    logger$2.error(methodName, 'need cacheOptions.gsPath');
     return;
   }
   if (!cacheOptions.systemPrompt) {
-    logger.error(methodName, 'need cacheOptions.systemPrompt');
+    logger$2.error(methodName, 'need cacheOptions.systemPrompt');
     return;
   }
   if (!cacheOptions.cacheName) {
-    logger.error(methodName, 'need cacheOptions.cacheName');
+    logger$2.error(methodName, 'need cacheOptions.cacheName');
     return;
   }
   if (!cacheOptions.cacheTTL) {
-    logger.error(methodName, 'need cacheOptions.cacheTTL');
+    logger$2.error(methodName, 'need cacheOptions.cacheTTL');
     return;
   }
 
   // const
-  const mimeType = mime.lookup(cacheOptions.filePath);
-  logger.info(methodName, 'cacheOptions', cacheOptions);
-  logger.info(methodName, 'mimeType', mimeType);
+  const mimeType = mime.lookup(cacheOptions.gsPath);
+  logger$2.info(methodName, 'cacheOptions', cacheOptions);
+  logger$2.info(methodName, 'mimeType', mimeType);
 
   try {
-    // upload doc
-    const doc = await client.files.upload({
-      file: cacheOptions.filePath,
-      config: { mimeType: mimeType },
-    });
-    logger.info(methodName, 'doc.name', doc.name);
-
     // cache add
     const cache = await client.caches.create({
       model: modelName,
       config: {
-        contents: genai.createUserContent(genai.createPartFromUri(doc.uri, doc.mimeType)),
+        contents: genai.createUserContent(genai.createPartFromUri(cacheOptions.gsPath, mimeType)),
         systemInstruction: cacheOptions.systemPrompt,
         displayName: cacheOptions.cacheName,
         ttl: cacheOptions.cacheTTL,
@@ -184,8 +171,106 @@ async function cacheAdd(client, modelName, cacheOptions) {
 
     return cache;
   } catch (error) {
-    logger.error(methodName, 'error', error);
+    logger$2.error(methodName, 'error', error);
   }
-}
+};
 
-exports.Gemini = Gemini;
+// gemini
+const logger$1 = qiao_log_js.Logger('gemini-api.js');
+
+/**
+ * GeminiAPI
+ * @param {*} options
+ * @returns
+ */
+const GeminiAPI = (options) => {
+  const methodName = 'GeminiAPI';
+
+  // check
+  if (!options) {
+    logger$1.error(methodName, 'need options');
+    return;
+  }
+  if (!options.apiKey) {
+    logger$1.error(methodName, 'need options.apiKey');
+    return;
+  }
+  if (!options.modelName) {
+    logger$1.error(methodName, 'need options.modelName');
+    return;
+  }
+
+  // gemini
+  const gemini = {};
+  gemini.client = new genai.GoogleGenAI({
+    apiKey: options.apiKey,
+  });
+
+  // chat
+  gemini.chat = async (chatOptions) => {
+    return await chat(gemini.client, options.modelName, chatOptions);
+  };
+  gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
+    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+  };
+
+  // r
+  return gemini;
+};
+
+// gemini
+const logger = qiao_log_js.Logger('viho-llm');
+
+/**
+ * GeminiVertex
+ * @param {*} options
+ * @returns
+ */
+const GeminiVertex = (options) => {
+  const methodName = 'GeminiVertex';
+
+  // check
+  if (!options) {
+    logger.error(methodName, 'need options');
+    return;
+  }
+  if (!options.projectId) {
+    logger.error(methodName, 'need options.projectId');
+    return;
+  }
+  if (!options.location) {
+    logger.error(methodName, 'need options.location');
+    return;
+  }
+  if (!options.modelName) {
+    logger.error(methodName, 'need options.modelName');
+    return;
+  }
+
+  // gemini
+  const gemini = {};
+  gemini.client = new genai.GoogleGenAI({
+    vertexai: true,
+    project: options.projectId,
+    location: options.location,
+  });
+
+  // chat
+  gemini.chat = async (chatOptions) => {
+    return await chat(gemini.client, options.modelName, chatOptions);
+  };
+  gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
+    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+  };
+
+  // cache
+  gemini.cacheAdd = async (cacheOptions) => {
+    return await cacheAdd(gemini.client, options.modelName, cacheOptions);
+  };
+
+  // r
+  return gemini;
+};
+
+exports.GeminiAPI = GeminiAPI;
+exports.GeminiVertex = GeminiVertex;
