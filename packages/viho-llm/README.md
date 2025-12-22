@@ -99,15 +99,15 @@ import { OpenAIAPI } from 'viho-llm';
 const openai = OpenAIAPI({
   apiKey: 'your-openai-api-key',
   baseURL: 'https://api.openai.com/v1', // or your custom endpoint
-  modelID: 'gpt-4o',
-  modelThinking: 'enabled', // 'enabled' or 'disabled' for reasoning models
 });
 
 // Send a chat message
-const response = await openai.chat(
-  'You are a helpful assistant.', // system prompt
-  'Hello, how are you?', // user prompt
-);
+const response = await openai.chat({
+  modelID: 'gpt-4o',
+  modelThinking: 'enabled', // 'enabled' or 'disabled' for reasoning models
+  systemPrompt: 'You are a helpful assistant.',
+  userPrompt: 'Hello, how are you?',
+});
 
 console.log(response);
 ```
@@ -156,8 +156,12 @@ OpenAI streaming supports thinking/reasoning content for compatible models:
 ```javascript
 // Send a chat message with streaming (supports thinking mode)
 await openai.chatWithStreaming(
-  'You are a helpful assistant.', // system prompt
-  'Explain how neural networks work', // user prompt
+  {
+    modelID: 'deepseek-reasoner',
+    modelThinking: 'enabled',
+    systemPrompt: 'You are a helpful assistant.',
+    userPrompt: 'Explain how neural networks work',
+  },
   {
     beginCallback: () => {
       console.log('Stream started...');
@@ -413,21 +417,22 @@ Creates a new OpenAI client instance supporting OpenAI and compatible APIs.
 - `options` (Object) - Configuration options
   - `apiKey` (string) **required** - Your OpenAI API key or compatible service key
   - `baseURL` (string) **required** - API base URL (e.g., 'https://api.openai.com/v1')
-  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
-  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
 
 #### Returns
 
 Returns an OpenAI client object with the following methods:
 
-##### `client.chat(systemPrompt, userPrompt)`
+##### `client.chat(chatOptions)`
 
 Sends a chat request to the OpenAI API.
 
 **Parameters:**
 
-- `systemPrompt` (string) **required** - System instruction/context for the model
-- `userPrompt` (string) **required** - User's message/question
+- `chatOptions` (Object) **required** - Chat configuration
+  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
+  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
+  - `systemPrompt` (string) **required** - System instruction/context for the model
+  - `userPrompt` (string) **required** - User's message/question
 
 **Returns:**
 
@@ -436,21 +441,26 @@ Sends a chat request to the OpenAI API.
 **Example:**
 
 ```javascript
-const response = await openai.chat(
-  'You are a helpful coding assistant.',
-  'Write a Python function to reverse a string',
-);
+const response = await openai.chat({
+  modelID: 'gpt-4o',
+  modelThinking: 'disabled',
+  systemPrompt: 'You are a helpful coding assistant.',
+  userPrompt: 'Write a Python function to reverse a string',
+});
 console.log(response.content);
 ```
 
-##### `client.chatWithStreaming(systemPrompt, userPrompt, callbackOptions)`
+##### `client.chatWithStreaming(chatOptions, callbackOptions)`
 
 Sends a chat request to the OpenAI API with streaming response and thinking support.
 
 **Parameters:**
 
-- `systemPrompt` (string) **required** - System instruction/context for the model
-- `userPrompt` (string) **required** - User's message/question
+- `chatOptions` (Object) **required** - Chat configuration
+  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
+  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
+  - `systemPrompt` (string) **required** - System instruction/context for the model
+  - `userPrompt` (string) **required** - User's message/question
 
 - `callbackOptions` (Object) **required** - Callback functions for handling stream events
   - `beginCallback` (Function) - Called when the stream begins
@@ -471,17 +481,25 @@ Sends a chat request to the OpenAI API with streaming response and thinking supp
 **Example:**
 
 ```javascript
-await openai.chatWithStreaming('You are a math tutor.', 'Solve: What is 15% of 240?', {
-  thinkingCallback: (thinking) => {
-    console.log('Thinking:', thinking);
+await openai.chatWithStreaming(
+  {
+    modelID: 'deepseek-reasoner',
+    modelThinking: 'enabled',
+    systemPrompt: 'You are a math tutor.',
+    userPrompt: 'Solve: What is 15% of 240?',
   },
-  contentCallback: (chunk) => {
-    process.stdout.write(chunk);
+  {
+    thinkingCallback: (thinking) => {
+      console.log('Thinking:', thinking);
+    },
+    contentCallback: (chunk) => {
+      process.stdout.write(chunk);
+    },
+    endCallback: () => {
+      console.log('\nDone!');
+    },
   },
-  endCallback: () => {
-    console.log('\nDone!');
-  },
-});
+);
 ```
 
 ## License
