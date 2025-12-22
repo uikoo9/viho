@@ -370,10 +370,13 @@ const logger$1 = qiao_log_js.Logger('openai-util.js');
 /**
  * chat
  * @param {*} client
- * @param {*} chatOptions
+ * @param {*} modelID
+ * @param {*} modelThinking
+ * @param {*} systemPrompt
+ * @param {*} userPrompt
  * @returns
  */
-const chat = async (client, chatOptions) => {
+const chat = async (client, modelID, modelThinking, systemPrompt, userPrompt) => {
   const methodName = 'chat';
 
   // check
@@ -381,10 +384,34 @@ const chat = async (client, chatOptions) => {
     logger$1.error(methodName, 'need client');
     return;
   }
-  if (!chatOptions) {
-    logger$1.error(methodName, 'need chatOptions');
+  if (!modelID) {
+    logger$1.error(methodName, 'need modelID');
     return;
   }
+  if (!modelThinking) {
+    logger$1.error(methodName, 'need modelThinking');
+    return;
+  }
+  if (!systemPrompt) {
+    logger$1.error(methodName, 'need systemPrompt');
+    return;
+  }
+  if (!userPrompt) {
+    logger$1.error(methodName, 'need userPrompt');
+    return;
+  }
+
+  // chat
+  const chatOptions = {
+    model: modelID,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ],
+    thinking: {
+      type: modelThinking,
+    },
+  };
 
   // go
   try {
@@ -398,11 +425,14 @@ const chat = async (client, chatOptions) => {
 /**
  * chatWithStreaming
  * @param {*} client
- * @param {*} chatOptions
+ * @param {*} modelID
+ * @param {*} modelThinking
+ * @param {*} systemPrompt
+ * @param {*} userPrompt
  * @param {*} callbackOptions
  * @returns
  */
-const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
+const chatWithStreaming = async (client, modelID, modelThinking, systemPrompt, userPrompt, callbackOptions) => {
   const methodName = 'chatWithStreaming';
 
   // check
@@ -410,8 +440,20 @@ const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
     logger$1.error(methodName, 'need client');
     return;
   }
-  if (!chatOptions) {
-    logger$1.error(methodName, 'need chatOptions');
+  if (!modelID) {
+    logger$1.error(methodName, 'need modelID');
+    return;
+  }
+  if (!modelThinking) {
+    logger$1.error(methodName, 'need modelThinking');
+    return;
+  }
+  if (!systemPrompt) {
+    logger$1.error(methodName, 'need systemPrompt');
+    return;
+  }
+  if (!userPrompt) {
+    logger$1.error(methodName, 'need userPrompt');
     return;
   }
   if (!callbackOptions) {
@@ -428,6 +470,19 @@ const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
   const contentCallback = callbackOptions.contentCallback;
   const firstContentCallback = callbackOptions.firstContentCallback;
 
+  // chat
+  const chatOptions = {
+    model: modelID,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ],
+    thinking: {
+      type: modelThinking,
+    },
+  };
+
+  // go
   try {
     chatOptions.stream = true;
     const stream = await client.chat.completions.create(chatOptions);
@@ -491,19 +546,37 @@ const OpenAIAPI = (options) => {
     logger.error(methodName, 'need options.baseURL');
     return;
   }
+  if (!options.modelID) {
+    logger.error(methodName, 'need options.modelID');
+    return;
+  }
+  if (!options.modelThinking) {
+    logger.error(methodName, 'need options.modelThinking');
+    return;
+  }
 
   // openai
   const openai = {};
-  openai.client = new OpenAI(options);
+  openai.client = new OpenAI({
+    apiKey: options.apiKey,
+    baseURL: options.baseURL,
+  });
 
   // chat
-  openai.chat = async (chatOptions) => {
-    return await chat(openai.client, chatOptions);
+  openai.chat = async (systemPrompt, userPrompt) => {
+    return await chat(openai.client, options.modelID, options.modelThinking, systemPrompt, userPrompt);
   };
 
   // chat with streaming
-  openai.chatWithStreaming = async (chatOptions, callbakOptions) => {
-    return await chatWithStreaming(openai.client, chatOptions, callbakOptions);
+  openai.chatWithStreaming = async (systemPrompt, userPrompt, callbakOptions) => {
+    return await chatWithStreaming(
+      openai.client,
+      options.modelID,
+      options.modelThinking,
+      systemPrompt,
+      userPrompt,
+      callbakOptions,
+    );
   };
 
   //
