@@ -3,9 +3,10 @@
 var genai = require('@google/genai');
 var mime = require('mime-types');
 var qiao_log_js = require('qiao.log.js');
+var OpenAI = require('openai');
 
 // gemini
-const logger$2 = qiao_log_js.Logger('gemini-util.js');
+const logger$4 = qiao_log_js.Logger('gemini-util.js');
 
 /**
  * chat
@@ -14,24 +15,24 @@ const logger$2 = qiao_log_js.Logger('gemini-util.js');
  * @param {*} chatOptions
  * @returns
  */
-const chat = async (client, modelName, chatOptions) => {
+const chat$1 = async (client, modelName, chatOptions) => {
   const methodName = 'chat';
 
   // check
   if (!client) {
-    logger$2.error(methodName, 'need client');
+    logger$4.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$2.error(methodName, 'need modelName');
+    logger$4.error(methodName, 'need modelName');
     return;
   }
   if (!chatOptions) {
-    logger$2.error(methodName, 'need chatOptions');
+    logger$4.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger$2.error(methodName, 'need chatOptions.contents');
+    logger$4.error(methodName, 'need chatOptions.contents');
     return;
   }
 
@@ -47,13 +48,13 @@ const chat = async (client, modelName, chatOptions) => {
     // gen
     const response = await client.models.generateContent(options);
     if (!response || !response.text) {
-      logger$2.error(methodName, 'invalid response');
+      logger$4.error(methodName, 'invalid response');
       return;
     }
 
     return response.text;
   } catch (error) {
-    logger$2.error(methodName, 'error', error);
+    logger$4.error(methodName, 'error', error);
   }
 };
 
@@ -65,28 +66,28 @@ const chat = async (client, modelName, chatOptions) => {
  * @param {*} callbackOptions
  * @returns
  */
-const chatWithStreaming = async (client, modelName, chatOptions, callbackOptions) => {
+const chatWithStreaming$1 = async (client, modelName, chatOptions, callbackOptions) => {
   const methodName = 'chatWithStreaming';
 
   // check
   if (!client) {
-    logger$2.error(methodName, 'need client');
+    logger$4.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$2.error(methodName, 'need modelName');
+    logger$4.error(methodName, 'need modelName');
     return;
   }
   if (!chatOptions) {
-    logger$2.error(methodName, 'need chatOptions');
+    logger$4.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger$2.error(methodName, 'need chatOptions.contents');
+    logger$4.error(methodName, 'need chatOptions.contents');
     return;
   }
   if (!callbackOptions) {
-    logger$2.error(methodName, 'need callbackOptions');
+    logger$4.error(methodName, 'need callbackOptions');
     return;
   }
 
@@ -98,9 +99,6 @@ const chatWithStreaming = async (client, modelName, chatOptions, callbackOptions
   const firstContentCallback = callbackOptions.firstContentCallback;
 
   try {
-    // begin
-    if (beginCallback) beginCallback();
-
     // options
     const options = Object.assign(
       {
@@ -111,6 +109,7 @@ const chatWithStreaming = async (client, modelName, chatOptions, callbackOptions
 
     // gen
     const response = await client.models.generateContentStream(options);
+    if (beginCallback) beginCallback();
 
     // go
     let firstContent = true;
@@ -146,38 +145,38 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
 
   // check
   if (!client) {
-    logger$2.error(methodName, 'need client');
+    logger$4.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$2.error(methodName, 'need modelName');
+    logger$4.error(methodName, 'need modelName');
     return;
   }
   if (!cacheOptions) {
-    logger$2.error(methodName, 'need cacheOptions');
+    logger$4.error(methodName, 'need cacheOptions');
     return;
   }
   if (!cacheOptions.gsPath) {
-    logger$2.error(methodName, 'need cacheOptions.gsPath');
+    logger$4.error(methodName, 'need cacheOptions.gsPath');
     return;
   }
   if (!cacheOptions.systemPrompt) {
-    logger$2.error(methodName, 'need cacheOptions.systemPrompt');
+    logger$4.error(methodName, 'need cacheOptions.systemPrompt');
     return;
   }
   if (!cacheOptions.cacheName) {
-    logger$2.error(methodName, 'need cacheOptions.cacheName');
+    logger$4.error(methodName, 'need cacheOptions.cacheName');
     return;
   }
   if (!cacheOptions.cacheTTL) {
-    logger$2.error(methodName, 'need cacheOptions.cacheTTL');
+    logger$4.error(methodName, 'need cacheOptions.cacheTTL');
     return;
   }
 
   // const
   const mimeType = mime.lookup(cacheOptions.gsPath);
-  logger$2.info(methodName, 'cacheOptions', cacheOptions);
-  logger$2.info(methodName, 'mimeType', mimeType);
+  logger$4.info(methodName, 'cacheOptions', cacheOptions);
+  logger$4.info(methodName, 'mimeType', mimeType);
 
   try {
     // cache add
@@ -193,7 +192,7 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
 
     return cache;
   } catch (error) {
-    logger$2.error(methodName, 'error', error);
+    logger$4.error(methodName, 'error', error);
   }
 };
 
@@ -207,7 +206,7 @@ const cacheList = async (client) => {
 
   // check
   if (!client) {
-    logger$2.error(methodName, 'need client');
+    logger$4.error(methodName, 'need client');
     return;
   }
 
@@ -221,7 +220,7 @@ const cacheList = async (client) => {
 
     return cacheObjs;
   } catch (error) {
-    logger$2.error(methodName, 'error', error);
+    logger$4.error(methodName, 'error', error);
   }
 };
 
@@ -237,15 +236,15 @@ const cacheUpdate = async (client, cacheName, cacheOptions) => {
 
   // check
   if (!client) {
-    logger$2.error(methodName, 'need client');
+    logger$4.error(methodName, 'need client');
     return;
   }
   if (!cacheName) {
-    logger$2.error(methodName, 'need cacheName');
+    logger$4.error(methodName, 'need cacheName');
     return;
   }
   if (!cacheOptions) {
-    logger$2.error(methodName, 'need cacheOptions');
+    logger$4.error(methodName, 'need cacheOptions');
     return;
   }
 
@@ -258,12 +257,12 @@ const cacheUpdate = async (client, cacheName, cacheOptions) => {
 
     return res;
   } catch (error) {
-    logger$2.error(methodName, 'error', error);
+    logger$4.error(methodName, 'error', error);
   }
 };
 
 // gemini
-const logger$1 = qiao_log_js.Logger('gemini-api.js');
+const logger$3 = qiao_log_js.Logger('gemini-api.js');
 
 /**
  * GeminiAPI
@@ -275,15 +274,15 @@ const GeminiAPI = (options) => {
 
   // check
   if (!options) {
-    logger$1.error(methodName, 'need options');
+    logger$3.error(methodName, 'need options');
     return;
   }
   if (!options.apiKey) {
-    logger$1.error(methodName, 'need options.apiKey');
+    logger$3.error(methodName, 'need options.apiKey');
     return;
   }
   if (!options.modelName) {
-    logger$1.error(methodName, 'need options.modelName');
+    logger$3.error(methodName, 'need options.modelName');
     return;
   }
 
@@ -295,10 +294,10 @@ const GeminiAPI = (options) => {
 
   // chat
   gemini.chat = async (chatOptions) => {
-    return await chat(gemini.client, options.modelName, chatOptions);
+    return await chat$1(gemini.client, options.modelName, chatOptions);
   };
   gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
-    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+    return await chatWithStreaming$1(gemini.client, options.modelName, chatOptions, callbackOptions);
   };
 
   // r
@@ -306,7 +305,7 @@ const GeminiAPI = (options) => {
 };
 
 // gemini
-const logger = qiao_log_js.Logger('viho-llm');
+const logger$2 = qiao_log_js.Logger('viho-llm');
 
 /**
  * GeminiVertex
@@ -318,19 +317,19 @@ const GeminiVertex = (options) => {
 
   // check
   if (!options) {
-    logger.error(methodName, 'need options');
+    logger$2.error(methodName, 'need options');
     return;
   }
   if (!options.projectId) {
-    logger.error(methodName, 'need options.projectId');
+    logger$2.error(methodName, 'need options.projectId');
     return;
   }
   if (!options.location) {
-    logger.error(methodName, 'need options.location');
+    logger$2.error(methodName, 'need options.location');
     return;
   }
   if (!options.modelName) {
-    logger.error(methodName, 'need options.modelName');
+    logger$2.error(methodName, 'need options.modelName');
     return;
   }
 
@@ -344,10 +343,10 @@ const GeminiVertex = (options) => {
 
   // chat
   gemini.chat = async (chatOptions) => {
-    return await chat(gemini.client, options.modelName, chatOptions);
+    return await chat$1(gemini.client, options.modelName, chatOptions);
   };
   gemini.chatWithStreaming = async (chatOptions, callbackOptions) => {
-    return await chatWithStreaming(gemini.client, options.modelName, chatOptions, callbackOptions);
+    return await chatWithStreaming$1(gemini.client, options.modelName, chatOptions, callbackOptions);
   };
 
   // cache
@@ -365,5 +364,152 @@ const GeminiVertex = (options) => {
   return gemini;
 };
 
+// Logger
+const logger$1 = qiao_log_js.Logger('openai-util.js');
+
+/**
+ * chat
+ * @param {*} client
+ * @param {*} chatOptions
+ * @returns
+ */
+const chat = async (client, chatOptions) => {
+  const methodName = 'chat';
+
+  // check
+  if (!client) {
+    logger$1.error(methodName, 'need client');
+    return;
+  }
+  if (!chatOptions) {
+    logger$1.error(methodName, 'need chatOptions');
+    return;
+  }
+
+  // go
+  try {
+    const completion = await client.chat.completions.create(chatOptions);
+    return completion.choices[0]?.message;
+  } catch (error) {
+    logger$1.error(methodName, 'error', error);
+  }
+};
+
+/**
+ * chatWithStreaming
+ * @param {*} client
+ * @param {*} chatOptions
+ * @param {*} callbackOptions
+ * @returns
+ */
+const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
+  const methodName = 'chatWithStreaming';
+
+  // check
+  if (!client) {
+    logger$1.error(methodName, 'need client');
+    return;
+  }
+  if (!chatOptions) {
+    logger$1.error(methodName, 'need chatOptions');
+    return;
+  }
+  if (!callbackOptions) {
+    logger$1.error(methodName, 'need callbackOptions');
+    return;
+  }
+
+  // callback
+  const beginCallback = callbackOptions.beginCallback;
+  const endCallback = callbackOptions.endCallback;
+  const errorCallback = callbackOptions.errorCallback;
+  const thinkingCallback = callbackOptions.thinkingCallback;
+  const firstThinkingCallback = callbackOptions.firstThinkingCallback;
+  const contentCallback = callbackOptions.contentCallback;
+  const firstContentCallback = callbackOptions.firstContentCallback;
+
+  try {
+    chatOptions.stream = true;
+    const stream = await client.chat.completions.create(chatOptions);
+    if (beginCallback) beginCallback();
+
+    // go
+    let firstThinking = true;
+    let firstContent = true;
+    for await (const part of stream) {
+      // thinking
+      const thinkingContent = part.choices[0]?.delta?.reasoning_content;
+      if (thinkingContent && thinkingCallback) {
+        if (firstThinking && firstThinkingCallback) {
+          firstThinking = false;
+          firstThinkingCallback();
+        }
+
+        thinkingCallback(thinkingContent);
+      }
+
+      // content
+      const content = part.choices[0]?.delta?.content;
+      if (content && contentCallback) {
+        if (firstContent && firstContentCallback) {
+          firstContent = false;
+          firstContentCallback();
+        }
+
+        contentCallback(content);
+      }
+    }
+
+    // end
+    if (endCallback) endCallback();
+  } catch (error) {
+    if (errorCallback) errorCallback(error);
+  }
+};
+
+// openai
+const logger = qiao_log_js.Logger('openai.js');
+
+/**
+ * OpenAI
+ * @param {*} options
+ * @returns
+ */
+const OpenAIAPI = (options) => {
+  const methodName = 'OpenAI';
+
+  // check
+  if (!options) {
+    logger.error(methodName, 'need options');
+    return;
+  }
+  if (!options.apiKey) {
+    logger.error(methodName, 'need options.apiKey');
+    return;
+  }
+  if (!options.baseURL) {
+    logger.error(methodName, 'need options.baseURL');
+    return;
+  }
+
+  // openai
+  const openai = {};
+  openai.client = new OpenAI(options);
+
+  // chat
+  openai.chat = async (chatOptions) => {
+    return await chat(openai.client, chatOptions);
+  };
+
+  // chat with streaming
+  openai.chatWithStreaming = async (chatOptions, callbakOptions) => {
+    return await chatWithStreaming(openai.client, chatOptions, callbakOptions);
+  };
+
+  //
+  return openai;
+};
+
 exports.GeminiAPI = GeminiAPI;
 exports.GeminiVertex = GeminiVertex;
+exports.OpenAIAPI = OpenAIAPI;

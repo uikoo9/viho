@@ -99,9 +99,6 @@ export const chatWithStreaming = async (client, modelName, chatOptions, callback
   const firstContentCallback = callbackOptions.firstContentCallback;
 
   try {
-    // begin
-    if (beginCallback) beginCallback();
-
     // options
     const options = Object.assign(
       {
@@ -112,6 +109,7 @@ export const chatWithStreaming = async (client, modelName, chatOptions, callback
 
     // gen
     const response = await client.models.generateContentStream(options);
+    if (beginCallback) beginCallback();
 
     // go
     let firstContent = true;

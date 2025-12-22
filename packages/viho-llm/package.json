@@ -42,6 +42,7 @@
   "dependencies": {
     "@google/genai": "^1.34.0",
     "mime-types": "^2.1.35",
+    "openai": "^5.23.2",
     "qiao.log.js": "^3.7.5"
   },
   "nx": {
