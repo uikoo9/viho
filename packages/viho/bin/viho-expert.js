@@ -2,7 +2,7 @@
 const cli = require('qiao-cli');
 
 // llm
-const LLM = require('qiao-llm');
+const { OpenAIAPI } = require('viho-llm');
 
 // util
 const { expertAsk } = require('../src/llm.js');
@@ -65,7 +65,7 @@ async function expertAskByName(expertName) {
   if (!model) return;
 
   // init
-  const llm = LLM({
+  const llm = OpenAIAPI({
     apiKey: model.apiKey,
     baseURL: model.baseURL,
   });
