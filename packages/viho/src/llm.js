@@ -31,17 +31,36 @@ exports.ask = async (llm, model, systemPrompt) => {
   console.log(cli.colors.gray(answers.content));
   console.log();
 
-  // chat
-  const chatOptions = {
-    model: model.modelID,
-    messages: [
-      { role: 'system', content: systemPrompt || defaultSystemPrompt },
-      { role: 'user', content: answers.content },
-    ],
-    thinking: {
-      type: model.modelThinking,
-    },
-  };
+  // model type
+  const modelType = model.modelType || 'openai';
+
+  // chat options based on model type
+  let chatOptions;
+  if (modelType === 'openai') {
+    chatOptions = {
+      model: model.modelID,
+      messages: [
+        { role: 'system', content: systemPrompt || defaultSystemPrompt },
+        { role: 'user', content: answers.content },
+      ],
+      thinking: {
+        type: model.modelThinking,
+      },
+    };
+  } else if (modelType === 'gemini api' || modelType === 'gemini vertex') {
+    chatOptions = {
+      contents: [
+        {
+          role: 'user',
+          parts: [{ text: answers.content }],
+        },
+      ],
+    };
+    // Add system instruction if provided
+    if (systemPrompt && systemPrompt !== defaultSystemPrompt) {
+      chatOptions.systemInstruction = systemPrompt;
+    }
+  }
 
   // callback options
   const callbackOptions = {

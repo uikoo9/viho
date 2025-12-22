@@ -1,12 +1,9 @@
 // qiao
 const cli = require('qiao-cli');
 
-// llm
-const { OpenAIAPI } = require('viho-llm');
-
 // util
 const { ask } = require('../src/llm.js');
-const { getDB, preLLMAsk } = require('../src/util.js');
+const { getDB, preLLMAsk, initLLM } = require('../src/util.js');
 const db = getDB();
 
 // cmd
@@ -18,10 +15,7 @@ cli.cmd
     const model = await preLLMAsk('ask', db, modelName);
 
     // llm
-    const llm = OpenAIAPI({
-      apiKey: model.apiKey,
-      baseURL: model.baseURL,
-    });
+    const llm = initLLM(model);
 
     // ask
     await ask(llm, model);

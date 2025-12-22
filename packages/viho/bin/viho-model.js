@@ -32,8 +32,19 @@ cli.cmd
  */
 async function modelAdd() {
   try {
-    // q a
-    const questions = [
+    // model type
+    const modelTypeQuestion = [
+      {
+        type: 'list',
+        name: 'modelType',
+        message: 'openai vs gemini',
+        choices: ['openai', 'gemini api', 'gemini vertex'],
+      },
+    ];
+    const modelTypeAnswer = await cli.ask(modelTypeQuestion);
+
+    // questions
+    const openAIQuestion = [
       {
         type: 'input',
         name: 'modelName',
@@ -61,7 +72,45 @@ async function modelAdd() {
         choices: ['enabled', 'disabled'],
       },
     ];
-    const answers = await cli.ask(questions);
+    const geminiAPIQuestion = [
+      {
+        type: 'input',
+        name: 'modelName',
+        message: 'Enter model name:',
+      },
+      {
+        type: 'input',
+        name: 'apiKey',
+        message: 'Enter API key:',
+      },
+    ];
+    const geminiVertexQuestion = [
+      {
+        type: 'input',
+        name: 'modelName',
+        message: 'Enter model name:',
+      },
+      {
+        type: 'input',
+        name: 'projectId',
+        message: 'Enter projectId:',
+      },
+      {
+        type: 'input',
+        name: 'location',
+        message: 'Enter location:',
+      },
+    ];
+
+    // final question
+    let finalQuestion;
+    if (modelTypeAnswer.modelType === 'openai') finalQuestion = openAIQuestion;
+    if (modelTypeAnswer.modelType === 'gemini api') finalQuestion = geminiAPIQuestion;
+    if (modelTypeAnswer.modelType === 'gemini vertex') finalQuestion = geminiVertexQuestion;
+
+    // answers
+    const answers = await cli.ask(finalQuestion);
+    answers.modelType = modelTypeAnswer.modelType;
     console.log();
 
     // check
@@ -110,9 +159,19 @@ async function modelList() {
       const isDefault = model.modelName === defaultModel;
       const defaultTag = isDefault ? cli.colors.green(' (default)') : '';
       console.log(cli.colors.white(`  • ${model.modelName}${defaultTag}`));
-      console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
-      console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
-      console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
+      console.log(cli.colors.gray(`    Type: ${model.modelType || 'openai'}`));
+
+      if (model.modelType === 'openai') {
+        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
+        console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
+        console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
+      } else if (model.modelType === 'gemini api') {
+        console.log(cli.colors.gray(`    API Key: ${model.apiKey ? '***' : 'Not set'}`));
+      } else if (model.modelType === 'gemini vertex') {
+        console.log(cli.colors.gray(`    Project ID: ${model.projectId}`));
+        console.log(cli.colors.gray(`    Location: ${model.location}`));
+      }
+
       console.log();
     });
 

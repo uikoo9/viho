@@ -1,13 +1,10 @@
 // qiao
 const cli = require('qiao-cli');
 
-// llm
-const { OpenAIAPI } = require('viho-llm');
-
 // util
 const { expertAsk } = require('../src/llm.js');
 const { experts } = require('../src/experts/experts.js');
-const { getDB, printLogo, preLLMAsk } = require('../src/util.js');
+const { getDB, printLogo, preLLMAsk, initLLM } = require('../src/util.js');
 const db = getDB();
 
 // actions
@@ -65,10 +62,7 @@ async function expertAskByName(expertName) {
   if (!model) return;
 
   // init
-  const llm = OpenAIAPI({
-    apiKey: model.apiKey,
-    baseURL: model.baseURL,
-  });
+  const llm = initLLM(model);
 
   // chat
   let keepChatting = true;

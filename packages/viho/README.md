@@ -13,11 +13,14 @@
 
 ## Features
 
-- Multiple AI model management
+- Multiple AI model management (OpenAI, Google Gemini)
+- Support for OpenAI-compatible APIs
+- Support for Google Gemini AI (API and Vertex AI)
 - Interactive Q&A with streaming responses
 - Continuous chat sessions for multi-turn conversations
-- Support for thinking mode (enabled/disabled/auto)
-- Configurable API endpoints (OpenAI, Anthropic, custom providers)
+- Support for thinking mode (for compatible models)
+- Expert mode with domain-specific knowledge
+- Configurable API endpoints
 - Default model configuration
 - Simple and intuitive CLI interface
 - Persistent configuration storage
@@ -62,19 +65,38 @@ viho ask
 
 Add a new AI model configuration interactively.
 
-You'll be prompted to enter:
+First, you'll select the model type:
+
+- **openai** - For OpenAI and OpenAI-compatible APIs
+- **gemini api** - For Google Gemini AI Studio
+- **gemini vertex** - For Google Gemini Vertex AI
+
+Then you'll be prompted to enter the required information based on the model type:
+
+**For OpenAI:**
 
 - Model name (a custom identifier)
 - API key
 - Base URL (e.g., https://api.openai.com/v1)
-- Model ID (e.g., gpt-4, claude-3-5-sonnet-20241022)
-- Thinking mode (enabled/disabled/auto)
+- Model ID (e.g., gpt-4, gpt-4o)
+- Thinking mode (enabled/disabled)
+
+**For Gemini API:**
+
+- Model name (a custom identifier)
+- API key (from Google AI Studio)
+
+**For Gemini Vertex:**
+
+- Model name (a custom identifier)
+- Project ID (your GCP project)
+- Location (e.g., us-east1, us-central1)
 
 ```bash
 viho model add
 ```
 
-After adding a model, it will be available for use with `viho ask` and `viho chat` commands.
+After adding a model, it will be available for use with `viho ask`, `viho chat`, and `viho expert` commands.
 
 #### `viho model list`
 
@@ -87,24 +109,28 @@ viho model list
 This command displays:
 
 - Model name with a `(default)` tag for the default model
-- Model ID
-- Base URL
-- Thinking mode setting
+- Model type (openai, gemini api, or gemini vertex)
+- Type-specific configuration details
 
 **Example output:**
 
 ```
 Configured models:
 
-  • deepseek (default)
-    Model ID: ep-20250822181529-2gg27
-    Base URL: https://ark.cn-beijing.volces.com/api/v3
-    Thinking: auto
-
-  • kimi
-    Model ID: kimi-k2-thinking
-    Base URL: https://api.moonshot.cn/v1
+  • gpt4 (default)
+    Type: openai
+    Model ID: gpt-4o
+    Base URL: https://api.openai.com/v1
     Thinking: enabled
+
+  • gemini
+    Type: gemini api
+    API Key: ***
+
+  • gemini-pro
+    Type: gemini vertex
+    Project ID: my-project-123
+    Location: us-east1
 ```
 
 #### `viho model remove`
@@ -177,6 +203,49 @@ The chat session runs in a loop, allowing you to ask multiple questions continuo
 - `viho ask` - Single question, exits after receiving the answer
 - `viho chat` - Continuous loop, keeps asking for new questions until manually stopped (Ctrl+C)
 
+### Expert Mode
+
+Expert mode allows you to chat with an AI model that has access to domain-specific documentation, making it more knowledgeable about particular libraries or frameworks.
+
+#### `viho expert list`
+
+List all available expert resources:
+
+```bash
+viho expert list
+```
+
+This displays available experts like:
+
+- `antd` - Ant Design documentation
+- `daisyui` - DaisyUI documentation
+
+#### `viho expert <name> [modelName]`
+
+Start an expert chat session with domain-specific knowledge:
+
+```bash
+viho expert antd
+```
+
+Or specify a model explicitly:
+
+```bash
+viho expert daisyui mymodel
+```
+
+The expert mode works similarly to `viho chat` but includes the relevant documentation as context, making the AI more accurate when answering questions about that specific library or framework.
+
+**Example:**
+
+```bash
+# Get help with Ant Design
+viho expert antd
+
+# Ask: "How do I create a responsive table with sorting?"
+# The AI will use Ant Design documentation to provide accurate answers
+```
+
 ## Configuration
 
 Configuration is stored in `~/viho.json`. You can manage all settings through the CLI commands.
@@ -200,11 +269,24 @@ Configuration is stored in `~/viho.json`. You can manage all settings through th
 
 ## Supported Providers
 
-viho works with any OpenAI-compatible API, including:
+viho supports multiple AI providers:
 
-- OpenAI (GPT-4, GPT-3.5, etc.)
-- Anthropic Claude (via compatible endpoints)
+### OpenAI-Compatible APIs
+
+- OpenAI (GPT-4, GPT-4o, GPT-3.5, etc.)
+- Any OpenAI-compatible API endpoints
 - Custom LLM providers with OpenAI-compatible APIs
+
+### Google Gemini
+
+- **Gemini API** (via Google AI Studio)
+  - Ideal for personal development and prototyping
+  - Get API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+
+- **Gemini Vertex AI** (via Google Cloud)
+  - Enterprise-grade with advanced features
+  - Requires Google Cloud project with Vertex AI enabled
+  - Supports context caching for cost optimization
 
 ## Examples
 
@@ -212,22 +294,31 @@ viho works with any OpenAI-compatible API, including:
 
 ```bash
 viho model add
+# Select model type: openai
 # Enter model name: gpt4
 # Enter API key: sk-...
 # Enter base URL: https://api.openai.com/v1
-# Enter model ID: gpt-4
+# Enter model ID: gpt-4o
 # Thinking mode: disabled
 ```
 
-### Adding a Claude Model
+### Adding a Gemini API Model
 
 ```bash
 viho model add
-# Enter model name: claude
-# Enter API key: your-anthropic-key
-# Enter base URL: https://api.anthropic.com
-# Enter model ID: claude-3-5-sonnet-20241022
-# Thinking mode: auto
+# Select model type: gemini api
+# Enter model name: gemini
+# Enter API key: your-google-ai-api-key
+```
+
+### Adding a Gemini Vertex AI Model
+
+```bash
+viho model add
+# Select model type: gemini vertex
+# Enter model name: gemini-pro
+# Enter projectId: my-gcp-project
+# Enter location: us-east1
 ```
 
 ### Setting Up for First Use
@@ -247,7 +338,8 @@ viho ask
 
 - [qiao-cli](https://www.npmjs.com/package/qiao-cli) - CLI utilities
 - [qiao-config](https://www.npmjs.com/package/qiao-config) - Configuration management
-- [qiao-llm](https://www.npmjs.com/package/qiao-llm) - LLM integration
+- [qiao-file](https://www.npmjs.com/package/qiao-file) - File utilities
+- [viho-llm](https://www.npmjs.com/package/viho-llm) - Multi-provider LLM integration (OpenAI, Gemini)
 
 ## License
 

@@ -10,6 +10,9 @@ const cli = require('qiao-cli');
 // db
 const DB = require('qiao-config');
 
+// llm
+const { OpenAIAPI, GeminiAPI, GeminiVertex } = require('viho-llm');
+
 // model
 const { getModelByName } = require('./model.js');
 
@@ -57,4 +60,38 @@ exports.preLLMAsk = async (type, db, modelName) => {
 
   // r
   return model;
+};
+
+/**
+ * initLLM
+ * @param {*} model
+ * @returns
+ */
+exports.initLLM = (model) => {
+  const modelType = model.modelType || 'openai';
+
+  if (modelType === 'openai') {
+    return OpenAIAPI({
+      apiKey: model.apiKey,
+      baseURL: model.baseURL,
+    });
+  } else if (modelType === 'gemini api') {
+    return GeminiAPI({
+      apiKey: model.apiKey,
+      modelName: model.modelName,
+    });
+  } else if (modelType === 'gemini vertex') {
+    return GeminiVertex({
+      projectId: model.projectId,
+      location: model.location,
+      modelName: model.modelName,
+    });
+  }
+
+  // fallback to openai
+  console.log(cli.colors.yellow(`Unknown model type: ${modelType}, falling back to OpenAI`));
+  return OpenAIAPI({
+    apiKey: model.apiKey,
+    baseURL: model.baseURL,
+  });
 };
