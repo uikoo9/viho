@@ -101,12 +101,13 @@ const openai = OpenAIAPI({
   baseURL: 'https://api.openai.com/v1', // or your custom endpoint
 });
 
-// Send a chat message
+// Send a chat message (using native OpenAI API format)
 const response = await openai.chat({
-  modelID: 'gpt-4o',
-  modelThinking: 'enabled', // 'enabled' or 'disabled' for reasoning models
-  systemPrompt: 'You are a helpful assistant.',
-  userPrompt: 'Hello, how are you?',
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful assistant.' },
+    { role: 'user', content: 'Hello, how are you?' },
+  ],
 });
 
 console.log(response);
@@ -157,10 +158,14 @@ OpenAI streaming supports thinking/reasoning content for compatible models:
 // Send a chat message with streaming (supports thinking mode)
 await openai.chatWithStreaming(
   {
-    modelID: 'deepseek-reasoner',
-    modelThinking: 'enabled',
-    systemPrompt: 'You are a helpful assistant.',
-    userPrompt: 'Explain how neural networks work',
+    model: 'deepseek-reasoner',
+    messages: [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: 'Explain how neural networks work' },
+    ],
+    thinking: {
+      type: 'enabled', // Enable reasoning mode
+    },
   },
   {
     beginCallback: () => {
@@ -428,11 +433,14 @@ Sends a chat request to the OpenAI API.
 
 **Parameters:**
 
-- `chatOptions` (Object) **required** - Chat configuration
-  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
-  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
-  - `systemPrompt` (string) **required** - System instruction/context for the model
-  - `userPrompt` (string) **required** - User's message/question
+- `chatOptions` (Object) **required** - Native OpenAI API chat completion options
+  - `model` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
+  - `messages` (Array) **required** - Array of message objects
+    - `role` (string) - 'system', 'user', or 'assistant'
+    - `content` (string) - Message content
+  - `thinking` (Object) - Optional thinking/reasoning configuration
+    - `type` (string) - 'enabled' or 'disabled'
+  - ...other OpenAI API parameters
 
 **Returns:**
 
@@ -442,10 +450,11 @@ Sends a chat request to the OpenAI API.
 
 ```javascript
 const response = await openai.chat({
-  modelID: 'gpt-4o',
-  modelThinking: 'disabled',
-  systemPrompt: 'You are a helpful coding assistant.',
-  userPrompt: 'Write a Python function to reverse a string',
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are a helpful coding assistant.' },
+    { role: 'user', content: 'Write a Python function to reverse a string' },
+  ],
 });
 console.log(response.content);
 ```
@@ -456,11 +465,14 @@ Sends a chat request to the OpenAI API with streaming response and thinking supp
 
 **Parameters:**
 
-- `chatOptions` (Object) **required** - Chat configuration
-  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
-  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
-  - `systemPrompt` (string) **required** - System instruction/context for the model
-  - `userPrompt` (string) **required** - User's message/question
+- `chatOptions` (Object) **required** - Native OpenAI API chat completion options
+  - `model` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
+  - `messages` (Array) **required** - Array of message objects
+    - `role` (string) - 'system', 'user', or 'assistant'
+    - `content` (string) - Message content
+  - `thinking` (Object) - Optional thinking/reasoning configuration
+    - `type` (string) - 'enabled' or 'disabled'
+  - ...other OpenAI API parameters (note: `stream` will be automatically set to `true`)
 
 - `callbackOptions` (Object) **required** - Callback functions for handling stream events
   - `beginCallback` (Function) - Called when the stream begins
@@ -483,10 +495,14 @@ Sends a chat request to the OpenAI API with streaming response and thinking supp
 ```javascript
 await openai.chatWithStreaming(
   {
-    modelID: 'deepseek-reasoner',
-    modelThinking: 'enabled',
-    systemPrompt: 'You are a math tutor.',
-    userPrompt: 'Solve: What is 15% of 240?',
+    model: 'deepseek-reasoner',
+    messages: [
+      { role: 'system', content: 'You are a math tutor.' },
+      { role: 'user', content: 'Solve: What is 15% of 240?' },
+    ],
+    thinking: {
+      type: 'enabled',
+    },
   },
   {
     thinkingCallback: (thinking) => {
