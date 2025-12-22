@@ -4,7 +4,7 @@
 
 <h1 align="center">viho-llm</h1>
 
-<p align="center">Utility library for working with Google Gemini AI, providing common tools and helpers for AI interactions.</p>
+<p align="center">Utility library for working with multiple LLM providers (Google Gemini and OpenAI), providing common tools and helpers for AI interactions.</p>
 
 ## Installation
 
@@ -14,7 +14,9 @@ npm install viho-llm
 
 ## Prerequisites
 
-This library supports two ways to access Google Gemini AI:
+This library supports multiple LLM providers:
+
+### Google Gemini AI
 
 1. **Google AI Studio (GeminiAPI)** - For personal development and prototyping
    - Get an API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
@@ -22,6 +24,14 @@ This library supports two ways to access Google Gemini AI:
 2. **Vertex AI (GeminiVertex)** - For enterprise applications with advanced features
    - Requires a Google Cloud project with Vertex AI enabled
    - Supports context caching for cost optimization
+
+### OpenAI Compatible APIs
+
+**OpenAI API (OpenAIAPI)** - For OpenAI and compatible services
+
+- Supports official OpenAI API
+- Compatible with OpenAI-like APIs (e.g., DeepSeek, local LLMs)
+- Supports thinking/reasoning mode for compatible models
 
 ## Usage
 
@@ -78,9 +88,35 @@ const response = await gemini.chat({
 console.log(response);
 ```
 
+### Basic Example with OpenAI API
+
+Using OpenAI or OpenAI-compatible services:
+
+```javascript
+import { OpenAIAPI } from 'viho-llm';
+
+// Initialize OpenAI client
+const openai = OpenAIAPI({
+  apiKey: 'your-openai-api-key',
+  baseURL: 'https://api.openai.com/v1', // or your custom endpoint
+  modelID: 'gpt-4o',
+  modelThinking: 'enabled', // 'enabled' or 'disabled' for reasoning models
+});
+
+// Send a chat message
+const response = await openai.chat(
+  'You are a helpful assistant.', // system prompt
+  'Hello, how are you?', // user prompt
+);
+
+console.log(response);
+```
+
 ### Streaming Example
 
-Both GeminiAPI and GeminiVertex support streaming responses:
+All providers (GeminiAPI, GeminiVertex, and OpenAIAPI) support streaming responses:
+
+#### Gemini Streaming
 
 ```javascript
 // Send a chat message with streaming
@@ -102,6 +138,41 @@ await gemini.chatWithStreaming(
     },
     contentCallback: (content) => {
       process.stdout.write(content); // Print each chunk as it arrives
+    },
+    endCallback: () => {
+      console.log('\nStream ended.');
+    },
+    errorCallback: (error) => {
+      console.error('Error:', error);
+    },
+  },
+);
+```
+
+#### OpenAI Streaming with Thinking Mode
+
+OpenAI streaming supports thinking/reasoning content for compatible models:
+
+```javascript
+// Send a chat message with streaming (supports thinking mode)
+await openai.chatWithStreaming(
+  'You are a helpful assistant.', // system prompt
+  'Explain how neural networks work', // user prompt
+  {
+    beginCallback: () => {
+      console.log('Stream started...');
+    },
+    firstThinkingCallback: () => {
+      console.log('\n[Thinking...]');
+    },
+    thinkingCallback: (thinking) => {
+      process.stdout.write(thinking); // Print reasoning process
+    },
+    firstContentCallback: () => {
+      console.log('\n[Response:]');
+    },
+    contentCallback: (content) => {
+      process.stdout.write(content); // Print response content
     },
     endCallback: () => {
       console.log('\nStream ended.');
@@ -328,6 +399,88 @@ Updates an existing cache configuration.
 ```javascript
 await gemini.cacheUpdate('projects/.../cachedContents/abc123', {
   ttl: '7200s', // Extend to 2 hours
+});
+```
+
+---
+
+### `OpenAIAPI(options)`
+
+Creates a new OpenAI client instance supporting OpenAI and compatible APIs.
+
+#### Parameters
+
+- `options` (Object) - Configuration options
+  - `apiKey` (string) **required** - Your OpenAI API key or compatible service key
+  - `baseURL` (string) **required** - API base URL (e.g., 'https://api.openai.com/v1')
+  - `modelID` (string) **required** - Model identifier (e.g., 'gpt-4o', 'deepseek-reasoner')
+  - `modelThinking` (string) **required** - Thinking mode: 'enabled' or 'disabled'
+
+#### Returns
+
+Returns an OpenAI client object with the following methods:
+
+##### `client.chat(systemPrompt, userPrompt)`
+
+Sends a chat request to the OpenAI API.
+
+**Parameters:**
+
+- `systemPrompt` (string) **required** - System instruction/context for the model
+- `userPrompt` (string) **required** - User's message/question
+
+**Returns:**
+
+- (Promise\<Object\>) - Message object with `role` and `content` properties
+
+**Example:**
+
+```javascript
+const response = await openai.chat(
+  'You are a helpful coding assistant.',
+  'Write a Python function to reverse a string',
+);
+console.log(response.content);
+```
+
+##### `client.chatWithStreaming(systemPrompt, userPrompt, callbackOptions)`
+
+Sends a chat request to the OpenAI API with streaming response and thinking support.
+
+**Parameters:**
+
+- `systemPrompt` (string) **required** - System instruction/context for the model
+- `userPrompt` (string) **required** - User's message/question
+
+- `callbackOptions` (Object) **required** - Callback functions for handling stream events
+  - `beginCallback` (Function) - Called when the stream begins
+  - `firstThinkingCallback` (Function) - Called when the first thinking chunk is received (for reasoning models)
+  - `thinkingCallback` (Function) - Called for each thinking/reasoning chunk received
+    - Parameters: `thinking` (string) - The thinking content chunk
+  - `firstContentCallback` (Function) - Called when the first response content chunk is received
+  - `contentCallback` (Function) - Called for each response content chunk received
+    - Parameters: `content` (string) - The text chunk
+  - `endCallback` (Function) - Called when the stream ends successfully
+  - `errorCallback` (Function) - Called if an error occurs
+    - Parameters: `error` (Error) - The error object
+
+**Returns:**
+
+- (Promise\<void\>) - Resolves when streaming completes
+
+**Example:**
+
+```javascript
+await openai.chatWithStreaming('You are a math tutor.', 'Solve: What is 15% of 240?', {
+  thinkingCallback: (thinking) => {
+    console.log('Thinking:', thinking);
+  },
+  contentCallback: (chunk) => {
+    process.stdout.write(chunk);
+  },
+  endCallback: () => {
+    console.log('\nDone!');
+  },
 });
 ```
 
