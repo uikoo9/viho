@@ -85,12 +85,14 @@ Then you'll be prompted to enter the required information based on the model typ
 
 - Model name (a custom identifier)
 - API key (from Google AI Studio)
+- Model ID (e.g., gemini-pro, gemini-1.5-flash, gemini-1.5-pro)
 
 **For Gemini Vertex:**
 
 - Model name (a custom identifier)
 - Project ID (your GCP project)
 - Location (e.g., us-east1, us-central1)
+- Model ID (e.g., gemini-1.5-flash-002, gemini-1.5-pro-002)
 
 ```bash
 viho model add
@@ -125,10 +127,12 @@ Configured models:
 
   • gemini
     Type: gemini api
+    Model ID: gemini-1.5-flash
     API Key: ***
 
   • gemini-pro
     Type: gemini vertex
+    Model ID: gemini-1.5-pro-002
     Project ID: my-project-123
     Location: us-east1
 ```
@@ -309,6 +313,7 @@ viho model add
 # Select model type: gemini api
 # Enter model name: gemini
 # Enter API key: your-google-ai-api-key
+# Enter model ID: gemini-1.5-flash
 ```
 
 ### Adding a Gemini Vertex AI Model
@@ -319,6 +324,7 @@ viho model add
 # Enter model name: gemini-pro
 # Enter projectId: my-gcp-project
 # Enter location: us-east1
+# Enter model ID: gemini-1.5-pro-002
 ```
 
 ### Setting Up for First Use

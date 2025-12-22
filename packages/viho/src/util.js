@@ -78,13 +78,13 @@ exports.initLLM = (model) => {
   } else if (modelType === 'gemini api') {
     return GeminiAPI({
       apiKey: model.apiKey,
-      modelName: model.modelName,
+      modelName: model.modelID, // Use modelID for API calls
     });
   } else if (modelType === 'gemini vertex') {
     return GeminiVertex({
       projectId: model.projectId,
       location: model.location,
-      modelName: model.modelName,
+      modelName: model.modelID, // Use modelID for API calls
     });
   }
 

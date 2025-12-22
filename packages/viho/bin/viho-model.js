@@ -83,6 +83,11 @@ async function modelAdd() {
         name: 'apiKey',
         message: 'Enter API key:',
       },
+      {
+        type: 'input',
+        name: 'modelID',
+        message: 'Enter model ID (e.g., gemini-pro, gemini-1.5-flash):',
+      },
     ];
     const geminiVertexQuestion = [
       {
@@ -99,6 +104,11 @@ async function modelAdd() {
         type: 'input',
         name: 'location',
         message: 'Enter location:',
+      },
+      {
+        type: 'input',
+        name: 'modelID',
+        message: 'Enter model ID (e.g., gemini-1.5-flash-002, gemini-1.5-pro-002):',
       },
     ];
 
@@ -166,8 +176,10 @@ async function modelList() {
         console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
         console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
       } else if (model.modelType === 'gemini api') {
+        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
         console.log(cli.colors.gray(`    API Key: ${model.apiKey ? '***' : 'Not set'}`));
       } else if (model.modelType === 'gemini vertex') {
+        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
         console.log(cli.colors.gray(`    Project ID: ${model.projectId}`));
         console.log(cli.colors.gray(`    Location: ${model.location}`));
       }
