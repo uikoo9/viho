@@ -370,13 +370,10 @@ const logger$1 = qiao_log_js.Logger('openai-util.js');
 /**
  * chat
  * @param {*} client
- * @param {*} modelID
- * @param {*} modelThinking
- * @param {*} systemPrompt
- * @param {*} userPrompt
+ * @param {*} options
  * @returns
  */
-const chat = async (client, modelID, modelThinking, systemPrompt, userPrompt) => {
+const chat = async (client, options) => {
   const methodName = 'chat';
 
   // check
@@ -384,32 +381,36 @@ const chat = async (client, modelID, modelThinking, systemPrompt, userPrompt) =>
     logger$1.error(methodName, 'need client');
     return;
   }
-  if (!modelID) {
-    logger$1.error(methodName, 'need modelID');
+  if (!options) {
+    logger$1.error(methodName, 'need options');
     return;
   }
-  if (!modelThinking) {
-    logger$1.error(methodName, 'need modelThinking');
+  if (!options.modelID) {
+    logger$1.error(methodName, 'need options.modelID');
     return;
   }
-  if (!systemPrompt) {
-    logger$1.error(methodName, 'need systemPrompt');
+  if (!options.modelThinking) {
+    logger$1.error(methodName, 'need options.modelThinking');
     return;
   }
-  if (!userPrompt) {
-    logger$1.error(methodName, 'need userPrompt');
+  if (!options.systemPrompt) {
+    logger$1.error(methodName, 'need options.systemPrompt');
+    return;
+  }
+  if (!options.userPrompt) {
+    logger$1.error(methodName, 'need options.userPrompt');
     return;
   }
 
   // chat
   const chatOptions = {
-    model: modelID,
+    model: options.modelID,
     messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'system', content: options.systemPrompt },
+      { role: 'user', content: options.userPrompt },
     ],
     thinking: {
-      type: modelThinking,
+      type: options.modelThinking,
     },
   };
 
@@ -425,14 +426,11 @@ const chat = async (client, modelID, modelThinking, systemPrompt, userPrompt) =>
 /**
  * chatWithStreaming
  * @param {*} client
- * @param {*} modelID
- * @param {*} modelThinking
- * @param {*} systemPrompt
- * @param {*} userPrompt
+ * @param {*} options
  * @param {*} callbackOptions
  * @returns
  */
-const chatWithStreaming = async (client, modelID, modelThinking, systemPrompt, userPrompt, callbackOptions) => {
+const chatWithStreaming = async (client, options, callbackOptions) => {
   const methodName = 'chatWithStreaming';
 
   // check
@@ -440,20 +438,24 @@ const chatWithStreaming = async (client, modelID, modelThinking, systemPrompt, u
     logger$1.error(methodName, 'need client');
     return;
   }
-  if (!modelID) {
-    logger$1.error(methodName, 'need modelID');
+  if (!options) {
+    logger$1.error(methodName, 'need options');
     return;
   }
-  if (!modelThinking) {
-    logger$1.error(methodName, 'need modelThinking');
+  if (!options.modelID) {
+    logger$1.error(methodName, 'need options.modelID');
     return;
   }
-  if (!systemPrompt) {
-    logger$1.error(methodName, 'need systemPrompt');
+  if (!options.modelThinking) {
+    logger$1.error(methodName, 'need options.modelThinking');
     return;
   }
-  if (!userPrompt) {
-    logger$1.error(methodName, 'need userPrompt');
+  if (!options.systemPrompt) {
+    logger$1.error(methodName, 'need options.systemPrompt');
+    return;
+  }
+  if (!options.userPrompt) {
+    logger$1.error(methodName, 'need options.userPrompt');
     return;
   }
   if (!callbackOptions) {
@@ -472,13 +474,13 @@ const chatWithStreaming = async (client, modelID, modelThinking, systemPrompt, u
 
   // chat
   const chatOptions = {
-    model: modelID,
+    model: options.modelID,
     messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'system', content: options.systemPrompt },
+      { role: 'user', content: options.userPrompt },
     ],
     thinking: {
-      type: modelThinking,
+      type: options.modelThinking,
     },
   };
 
@@ -546,14 +548,6 @@ const OpenAIAPI = (options) => {
     logger.error(methodName, 'need options.baseURL');
     return;
   }
-  if (!options.modelID) {
-    logger.error(methodName, 'need options.modelID');
-    return;
-  }
-  if (!options.modelThinking) {
-    logger.error(methodName, 'need options.modelThinking');
-    return;
-  }
 
   // openai
   const openai = {};
@@ -563,20 +557,13 @@ const OpenAIAPI = (options) => {
   });
 
   // chat
-  openai.chat = async (systemPrompt, userPrompt) => {
-    return await chat(openai.client, options.modelID, options.modelThinking, systemPrompt, userPrompt);
+  openai.chat = async (chatOptions) => {
+    return await chat(openai.client, chatOptions);
   };
 
   // chat with streaming
-  openai.chatWithStreaming = async (systemPrompt, userPrompt, callbakOptions) => {
-    return await chatWithStreaming(
-      openai.client,
-      options.modelID,
-      options.modelThinking,
-      systemPrompt,
-      userPrompt,
-      callbakOptions,
-    );
+  openai.chatWithStreaming = async (chatOptions, callbakOptions) => {
+    return await chatWithStreaming(openai.client, chatOptions, callbakOptions);
   };
 
   //

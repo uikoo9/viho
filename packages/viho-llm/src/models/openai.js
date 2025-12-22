@@ -29,14 +29,6 @@ export const OpenAIAPI = (options) => {
     logger.error(methodName, 'need options.baseURL');
     return;
   }
-  if (!options.modelID) {
-    logger.error(methodName, 'need options.modelID');
-    return;
-  }
-  if (!options.modelThinking) {
-    logger.error(methodName, 'need options.modelThinking');
-    return;
-  }
 
   // openai
   const openai = {};
@@ -46,20 +38,13 @@ export const OpenAIAPI = (options) => {
   });
 
   // chat
-  openai.chat = async (systemPrompt, userPrompt) => {
-    return await chat(openai.client, options.modelID, options.modelThinking, systemPrompt, userPrompt);
+  openai.chat = async (chatOptions) => {
+    return await chat(openai.client, chatOptions);
   };
 
   // chat with streaming
-  openai.chatWithStreaming = async (systemPrompt, userPrompt, callbakOptions) => {
-    return await chatWithStreaming(
-      openai.client,
-      options.modelID,
-      options.modelThinking,
-      systemPrompt,
-      userPrompt,
-      callbakOptions,
-    );
+  openai.chatWithStreaming = async (chatOptions, callbakOptions) => {
+    return await chatWithStreaming(openai.client, chatOptions, callbakOptions);
   };
 
   //

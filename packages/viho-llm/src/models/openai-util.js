@@ -5,13 +5,10 @@ const logger = Logger('openai-util.js');
 /**
  * chat
  * @param {*} client
- * @param {*} modelID
- * @param {*} modelThinking
- * @param {*} systemPrompt
- * @param {*} userPrompt
+ * @param {*} options
  * @returns
  */
-export const chat = async (client, modelID, modelThinking, systemPrompt, userPrompt) => {
+export const chat = async (client, options) => {
   const methodName = 'chat';
 
   // check
@@ -19,32 +16,36 @@ export const chat = async (client, modelID, modelThinking, systemPrompt, userPro
     logger.error(methodName, 'need client');
     return;
   }
-  if (!modelID) {
-    logger.error(methodName, 'need modelID');
+  if (!options) {
+    logger.error(methodName, 'need options');
     return;
   }
-  if (!modelThinking) {
-    logger.error(methodName, 'need modelThinking');
+  if (!options.modelID) {
+    logger.error(methodName, 'need options.modelID');
     return;
   }
-  if (!systemPrompt) {
-    logger.error(methodName, 'need systemPrompt');
+  if (!options.modelThinking) {
+    logger.error(methodName, 'need options.modelThinking');
     return;
   }
-  if (!userPrompt) {
-    logger.error(methodName, 'need userPrompt');
+  if (!options.systemPrompt) {
+    logger.error(methodName, 'need options.systemPrompt');
+    return;
+  }
+  if (!options.userPrompt) {
+    logger.error(methodName, 'need options.userPrompt');
     return;
   }
 
   // chat
   const chatOptions = {
-    model: modelID,
+    model: options.modelID,
     messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'system', content: options.systemPrompt },
+      { role: 'user', content: options.userPrompt },
     ],
     thinking: {
-      type: modelThinking,
+      type: options.modelThinking,
     },
   };
 
@@ -60,14 +61,11 @@ export const chat = async (client, modelID, modelThinking, systemPrompt, userPro
 /**
  * chatWithStreaming
  * @param {*} client
- * @param {*} modelID
- * @param {*} modelThinking
- * @param {*} systemPrompt
- * @param {*} userPrompt
+ * @param {*} options
  * @param {*} callbackOptions
  * @returns
  */
-export const chatWithStreaming = async (client, modelID, modelThinking, systemPrompt, userPrompt, callbackOptions) => {
+export const chatWithStreaming = async (client, options, callbackOptions) => {
   const methodName = 'chatWithStreaming';
 
   // check
@@ -75,20 +73,24 @@ export const chatWithStreaming = async (client, modelID, modelThinking, systemPr
     logger.error(methodName, 'need client');
     return;
   }
-  if (!modelID) {
-    logger.error(methodName, 'need modelID');
+  if (!options) {
+    logger.error(methodName, 'need options');
     return;
   }
-  if (!modelThinking) {
-    logger.error(methodName, 'need modelThinking');
+  if (!options.modelID) {
+    logger.error(methodName, 'need options.modelID');
     return;
   }
-  if (!systemPrompt) {
-    logger.error(methodName, 'need systemPrompt');
+  if (!options.modelThinking) {
+    logger.error(methodName, 'need options.modelThinking');
     return;
   }
-  if (!userPrompt) {
-    logger.error(methodName, 'need userPrompt');
+  if (!options.systemPrompt) {
+    logger.error(methodName, 'need options.systemPrompt');
+    return;
+  }
+  if (!options.userPrompt) {
+    logger.error(methodName, 'need options.userPrompt');
     return;
   }
   if (!callbackOptions) {
@@ -107,13 +109,13 @@ export const chatWithStreaming = async (client, modelID, modelThinking, systemPr
 
   // chat
   const chatOptions = {
-    model: modelID,
+    model: options.modelID,
     messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: userPrompt },
+      { role: 'system', content: options.systemPrompt },
+      { role: 'user', content: options.userPrompt },
     ],
     thinking: {
-      type: modelThinking,
+      type: options.modelThinking,
     },
   };
 
