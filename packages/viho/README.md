@@ -153,7 +153,7 @@ Remove a model configuration:
 viho model remove
 ```
 
-You'll be prompted to enter the model name to remove. If the removed model was set as default, you'll need to set a new default model.
+You'll be presented with a list of your configured models to choose from. If the removed model was set as default, you'll need to set a new default model.
 
 #### `viho model default`
 

@@ -209,29 +209,33 @@ async function modelList() {
  */
 async function modelRemove() {
   try {
+    // get models first
+    const models = await getModels(db);
+
+    // check if any models exist
+    if (!models || !models.length) {
+      console.log(cli.colors.red('No models found. Add one first: viho model add'));
+      console.log();
+      return;
+    }
+
+    // create choices from model names
+    const choices = models.map((model) => model.modelName);
+
     // q a
     const questions = [
       {
-        type: 'input',
+        type: 'list',
         name: 'modelName',
-        message: 'Enter model name to remove:',
+        message: 'Select model to remove:',
+        choices: choices,
       },
     ];
     const answers = await cli.ask(questions);
     console.log();
 
     // del
-    const models = await getModels(db);
     const modelNameToRemove = answers.modelName;
-
-    // check if model exists
-    const modelExists = models.some((model) => model.modelName === modelNameToRemove);
-    if (!modelExists) {
-      console.log(cli.colors.red(`Model not found: ${modelNameToRemove}`));
-      console.log();
-      return;
-    }
-
     const newModels = models.filter((model) => model.modelName !== modelNameToRemove);
     await setModels(db, newModels);
 
