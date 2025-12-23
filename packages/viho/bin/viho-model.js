@@ -259,38 +259,30 @@ async function modelRemove() {
  */
 async function modelDefault() {
   try {
-    // q a
-    const questions = [
-      {
-        type: 'input',
-        name: 'modelName',
-        message: 'Enter default model name:',
-      },
-    ];
-    const answers = await cli.ask(questions);
-    console.log();
-
-    // get keys
+    // get models first
     const models = await getModels(db);
-    const keys = models.map((model) => model.modelName);
 
-    // check keys
-    if (!keys || !keys.length) {
+    // check if any models exist
+    if (!models || !models.length) {
       console.log(cli.colors.red('No models found. Add one first: viho model add'));
       console.log();
       return;
     }
 
-    // check model
-    if (!keys.includes(answers.modelName)) {
-      console.log(cli.colors.red('Model not found. Available models:'));
-      console.log();
-      models.forEach((model) => {
-        console.log(cli.colors.gray(`  • ${model.modelName}`));
-      });
-      console.log();
-      return;
-    }
+    // create choices from model names
+    const choices = models.map((model) => model.modelName);
+
+    // q a
+    const questions = [
+      {
+        type: 'list',
+        name: 'modelName',
+        message: 'Select default model:',
+        choices: choices,
+      },
+    ];
+    const answers = await cli.ask(questions);
+    console.log();
 
     // set
     await db.config('default', answers.modelName);

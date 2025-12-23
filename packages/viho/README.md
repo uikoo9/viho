@@ -163,7 +163,7 @@ Set a default model for chat and ask sessions:
 viho model default
 ```
 
-The default model will be used when you run `viho ask` or `viho chat` without specifying a model name.
+You'll be presented with a list of your configured models to choose from. The default model will be used when you run `viho ask`, `viho chat`, or `viho expert` commands without specifying a model name.
 
 ### Ask
 
