@@ -1,6 +1,6 @@
 {
   "name": "viho",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A lightweight CLI tool for managing and interacting with AI models",
   "keywords": [
     "ai",
@@ -42,6 +42,6 @@
     "qiao-cli": "^5.0.0",
     "qiao-config": "^5.0.1",
     "qiao-file": "^5.0.1",
-    "viho-llm": "^0.2.0"
+    "viho-llm": "^0.2.2"
   }
 }
