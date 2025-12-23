@@ -47,9 +47,20 @@ const chat$1 = async (client, modelName, chatOptions) => {
 
     // gen
     const response = await client.models.generateContent(options);
-    if (!response || !response.text) {
+    if (!response || !response.candidates?.[0]?.content) {
       logger$4.error(methodName, 'invalid response');
       return;
+    }
+
+    // json
+    const rawText = response.candidates[0].content.parts[0].text;
+    if (options.generationConfig?.responseMimeType === 'application/json') {
+      try {
+        return JSON.parse(rawText);
+      } catch (e) {
+        logger$4.warn(methodName, 'Failed to parse JSON response', rawText);
+        return rawText;
+      }
     }
 
     return response.text;
