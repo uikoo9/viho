@@ -65,15 +65,17 @@ viho ask
 
 Add a new AI model configuration interactively.
 
-First, you'll select the model type:
+First, you'll select the platform:
 
-- **openai** - For OpenAI and OpenAI-compatible APIs
+- **openai** - For OpenAI official API
 - **gemini api** - For Google Gemini AI Studio
 - **gemini vertex** - For Google Gemini Vertex AI
+- **deepseek** - For DeepSeek (OpenAI-compatible)
+- **kimi** - For Kimi/Moonshot (OpenAI-compatible)
 
-Then you'll be prompted to enter the required information based on the model type:
+Then you'll be prompted to enter the required information based on the platform:
 
-**For OpenAI:**
+**For OpenAI-compatible platforms (openai, deepseek, kimi):**
 
 - Model name (a custom identifier)
 - API key
@@ -111,8 +113,8 @@ viho model list
 This command displays:
 
 - Model name with a `(default)` tag for the default model
-- Model type (openai, gemini api, or gemini vertex)
-- Type-specific configuration details
+- Platform (openai, deepseek, kimi, gemini api, or gemini vertex)
+- Platform-specific configuration details
 
 **Example output:**
 
@@ -120,18 +122,24 @@ This command displays:
 Configured models:
 
   • gpt4 (default)
-    Type: openai
+    Platform: openai
     Model ID: gpt-4o
     Base URL: https://api.openai.com/v1
     Thinking: enabled
 
+  • deepseek
+    Platform: deepseek
+    Model ID: deepseek-chat
+    Base URL: https://api.deepseek.com/v1
+    Thinking: enabled
+
   • gemini
-    Type: gemini api
+    Platform: gemini api
     Model ID: gemini-1.5-flash
     API Key: ***
 
   • gemini-pro
-    Type: gemini vertex
+    Platform: gemini vertex
     Model ID: gemini-1.5-pro-002
     Project ID: my-project-123
     Location: us-east1
@@ -273,13 +281,14 @@ Configuration is stored in `~/viho.json`. You can manage all settings through th
 
 ## Supported Providers
 
-viho supports multiple AI providers:
+viho supports multiple AI providers and platforms:
 
 ### OpenAI-Compatible APIs
 
-- OpenAI (GPT-4, GPT-4o, GPT-3.5, etc.)
-- Any OpenAI-compatible API endpoints
-- Custom LLM providers with OpenAI-compatible APIs
+- **OpenAI** - Official OpenAI API (GPT-4, GPT-4o, GPT-3.5, etc.)
+- **DeepSeek** - DeepSeek AI with reasoning capabilities
+- **Kimi** - Moonshot AI (Kimi)
+- Any other OpenAI-compatible API endpoints
 
 ### Google Gemini
 
@@ -298,7 +307,7 @@ viho supports multiple AI providers:
 
 ```bash
 viho model add
-# Select model type: openai
+# Select platform: openai
 # Enter model name: gpt4
 # Enter API key: sk-...
 # Enter base URL: https://api.openai.com/v1
@@ -306,11 +315,35 @@ viho model add
 # Thinking mode: disabled
 ```
 
+### Adding a DeepSeek Model
+
+```bash
+viho model add
+# Select platform: deepseek
+# Enter model name: deepseek
+# Enter API key: sk-...
+# Enter base URL: https://api.deepseek.com/v1
+# Enter model ID: deepseek-chat
+# Thinking mode: enabled
+```
+
+### Adding a Kimi Model
+
+```bash
+viho model add
+# Select platform: kimi
+# Enter model name: kimi
+# Enter API key: sk-...
+# Enter base URL: https://api.moonshot.cn/v1
+# Enter model ID: moonshot-v1-8k
+# Thinking mode: disabled
+```
+
 ### Adding a Gemini API Model
 
 ```bash
 viho model add
-# Select model type: gemini api
+# Select platform: gemini api
 # Enter model name: gemini
 # Enter API key: your-google-ai-api-key
 # Enter model ID: gemini-1.5-flash
@@ -320,7 +353,7 @@ viho model add
 
 ```bash
 viho model add
-# Select model type: gemini vertex
+# Select platform: gemini vertex
 # Enter model name: gemini-pro
 # Enter projectId: my-gcp-project
 # Enter location: us-east1

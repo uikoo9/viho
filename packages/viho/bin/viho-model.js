@@ -2,12 +2,17 @@
 const cli = require('qiao-cli');
 
 // util
+const { getALLPlatforms, getOpenAIPlatforms } = require('../src/platforms.js');
 const { getModels, setModels } = require('../src/model.js');
 const { getDB, printLogo } = require('../src/util.js');
 const db = getDB();
 
 // actions
 const actions = ['add', 'list', 'remove', 'default'];
+
+// platforms
+const allPlatforms = getALLPlatforms();
+const openAIPlatforms = getOpenAIPlatforms();
 
 // model
 cli.cmd
@@ -32,16 +37,16 @@ cli.cmd
  */
 async function modelAdd() {
   try {
-    // model type
-    const modelTypeQuestion = [
+    // platform
+    const platformQuestion = [
       {
         type: 'list',
-        name: 'modelType',
-        message: 'openai vs gemini',
-        choices: ['openai', 'gemini api', 'gemini vertex'],
+        name: 'platform',
+        message: 'select platform',
+        choices: allPlatforms,
       },
     ];
-    const modelTypeAnswer = await cli.ask(modelTypeQuestion);
+    const platformAnswer = await cli.ask(platformQuestion);
 
     // questions
     const openAIQuestion = [
@@ -114,13 +119,13 @@ async function modelAdd() {
 
     // final question
     let finalQuestion;
-    if (modelTypeAnswer.modelType === 'openai') finalQuestion = openAIQuestion;
-    if (modelTypeAnswer.modelType === 'gemini api') finalQuestion = geminiAPIQuestion;
-    if (modelTypeAnswer.modelType === 'gemini vertex') finalQuestion = geminiVertexQuestion;
+    if (openAIPlatforms.includes(platformAnswer.platform)) finalQuestion = openAIQuestion;
+    if (platformAnswer.platform === 'gemini api') finalQuestion = geminiAPIQuestion;
+    if (platformAnswer.platform === 'gemini vertex') finalQuestion = geminiVertexQuestion;
 
     // answers
     const answers = await cli.ask(finalQuestion);
-    answers.modelType = modelTypeAnswer.modelType;
+    answers.platform = platformAnswer.platform;
     console.log();
 
     // check
@@ -169,16 +174,16 @@ async function modelList() {
       const isDefault = model.modelName === defaultModel;
       const defaultTag = isDefault ? cli.colors.green(' (default)') : '';
       console.log(cli.colors.white(`  • ${model.modelName}${defaultTag}`));
-      console.log(cli.colors.gray(`    Type: ${model.modelType || 'openai'}`));
+      console.log(cli.colors.gray(`    Platform: ${model.platform || 'openai'}`));
 
-      if (model.modelType === 'openai') {
+      if (openAIPlatforms.includes(model.platform)) {
         console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
         console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
         console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
-      } else if (model.modelType === 'gemini api') {
+      } else if (model.platform === 'gemini api') {
         console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
         console.log(cli.colors.gray(`    API Key: ${model.apiKey ? '***' : 'Not set'}`));
-      } else if (model.modelType === 'gemini vertex') {
+      } else if (model.platform === 'gemini vertex') {
         console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
         console.log(cli.colors.gray(`    Project ID: ${model.projectId}`));
         console.log(cli.colors.gray(`    Location: ${model.location}`));

@@ -13,6 +13,9 @@ const DB = require('qiao-config');
 // llm
 const { OpenAIAPI, GeminiAPI, GeminiVertex } = require('viho-llm');
 
+// platforms
+const { getOpenAIPlatforms } = require('./platforms.js');
+
 // model
 const { getModelByName } = require('./model.js');
 
@@ -68,19 +71,20 @@ exports.preLLMAsk = async (type, db, modelName) => {
  * @returns
  */
 exports.initLLM = (model) => {
-  const modelType = model.modelType || 'openai';
+  const platform = model.platform || 'openai';
+  const openAIPlatforms = getOpenAIPlatforms();
 
-  if (modelType === 'openai') {
+  if (openAIPlatforms.includes(platform)) {
     return OpenAIAPI({
       apiKey: model.apiKey,
       baseURL: model.baseURL,
     });
-  } else if (modelType === 'gemini api') {
+  } else if (platform === 'gemini api') {
     return GeminiAPI({
       apiKey: model.apiKey,
       modelName: model.modelID, // Use modelID for API calls
     });
-  } else if (modelType === 'gemini vertex') {
+  } else if (platform === 'gemini vertex') {
     return GeminiVertex({
       projectId: model.projectId,
       location: model.location,
@@ -89,7 +93,7 @@ exports.initLLM = (model) => {
   }
 
   // fallback to openai
-  console.log(cli.colors.yellow(`Unknown model type: ${modelType}, falling back to OpenAI`));
+  console.log(cli.colors.yellow(`Unknown platform: ${platform}, falling back to OpenAI`));
   return OpenAIAPI({
     apiKey: model.apiKey,
     baseURL: model.baseURL,

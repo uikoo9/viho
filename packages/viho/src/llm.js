@@ -5,6 +5,9 @@ const path = require('path');
 const cli = require('qiao-cli');
 const { readFile } = require('qiao-file');
 
+// platforms
+const { getOpenAIPlatforms } = require('./platforms.js');
+
 // prompt
 const defaultSystemPrompt = 'You are a helpful AI assistant';
 
@@ -31,12 +34,13 @@ exports.ask = async (llm, model, systemPrompt) => {
   console.log(cli.colors.gray(answers.content));
   console.log();
 
-  // model type
-  const modelType = model.modelType || 'openai';
+  // platform
+  const platform = model.platform || 'openai';
+  const openAIPlatforms = getOpenAIPlatforms();
 
-  // chat options based on model type
+  // chat options based on platform
   let chatOptions;
-  if (modelType === 'openai') {
+  if (openAIPlatforms.includes(platform)) {
     chatOptions = {
       model: model.modelID,
       messages: [
@@ -47,7 +51,7 @@ exports.ask = async (llm, model, systemPrompt) => {
         type: model.modelThinking,
       },
     };
-  } else if (modelType === 'gemini api' || modelType === 'gemini vertex') {
+  } else if (platform === 'gemini api' || platform === 'gemini vertex') {
     chatOptions = {
       contents: [
         {
