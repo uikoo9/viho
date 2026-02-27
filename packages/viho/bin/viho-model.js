@@ -150,6 +150,33 @@ async function modelAdd() {
 }
 
 /**
+ * printModelInfo
+ * @param {*} model
+ * @param {*} defaultModel
+ */
+function printModelInfo(model, defaultModel) {
+  const isDefault = model.modelName === defaultModel;
+  const defaultTag = isDefault ? cli.colors.green(' (default)') : '';
+  console.log(cli.colors.white(`  • ${model.modelName}${defaultTag}`));
+  console.log(cli.colors.gray(`    Platform: ${model.platform || 'openai'}`));
+
+  if (openAIPlatforms.includes(model.platform)) {
+    console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
+    console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
+    console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
+  } else if (model.platform === 'gemini api') {
+    console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
+    console.log(cli.colors.gray(`    API Key: ${model.apiKey ? '***' : 'Not set'}`));
+  } else if (model.platform === 'gemini vertex') {
+    console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
+    console.log(cli.colors.gray(`    Project ID: ${model.projectId}`));
+    console.log(cli.colors.gray(`    Location: ${model.location}`));
+  }
+
+  console.log();
+}
+
+/**
  * modelList
  */
 async function modelList() {
@@ -161,36 +188,33 @@ async function modelList() {
     const models = await getModels(db);
     const defaultModel = await db.config('default');
 
-    console.log(cli.colors.cyan('Configured models:'));
-    console.log();
-
     if (!models || models.length === 0) {
       console.log(cli.colors.gray('No models configured. Use: viho model add'));
       console.log();
       return;
     }
 
-    models.forEach((model) => {
-      const isDefault = model.modelName === defaultModel;
-      const defaultTag = isDefault ? cli.colors.green(' (default)') : '';
-      console.log(cli.colors.white(`  • ${model.modelName}${defaultTag}`));
-      console.log(cli.colors.gray(`    Platform: ${model.platform || 'openai'}`));
+    // 分组：官方模型和用户模型
+    const officialModels = models.filter((model) => model.offical === true);
+    const userModels = models.filter((model) => !model.offical);
 
-      if (openAIPlatforms.includes(model.platform)) {
-        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
-        console.log(cli.colors.gray(`    Base URL: ${model.baseURL}`));
-        console.log(cli.colors.gray(`    Thinking: ${model.modelThinking}`));
-      } else if (model.platform === 'gemini api') {
-        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
-        console.log(cli.colors.gray(`    API Key: ${model.apiKey ? '***' : 'Not set'}`));
-      } else if (model.platform === 'gemini vertex') {
-        console.log(cli.colors.gray(`    Model ID: ${model.modelID}`));
-        console.log(cli.colors.gray(`    Project ID: ${model.projectId}`));
-        console.log(cli.colors.gray(`    Location: ${model.location}`));
-      }
-
+    // 显示官方模型
+    if (officialModels.length > 0) {
+      console.log(cli.colors.cyan('Official models:'));
       console.log();
-    });
+      officialModels.forEach((model) => {
+        printModelInfo(model, defaultModel);
+      });
+    }
+
+    // 显示用户模型
+    if (userModels.length > 0) {
+      console.log(cli.colors.cyan('User models:'));
+      console.log();
+      userModels.forEach((model) => {
+        printModelInfo(model, defaultModel);
+      });
+    }
 
     if (!defaultModel) {
       console.log(cli.colors.yellow('No default model set. Use: viho model default'));
