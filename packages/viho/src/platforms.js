@@ -1,7 +1,8 @@
 // platforms
 const openAIPlatforms = ['openai'];
 const geminiPlatforms = ['gemini api', 'gemini vertex'];
-const otherPlatforms = ['deepseek', 'doubao', 'kimi', 'n1n'];
+const otherPlatforms = ['deepseek', 'doubao', 'kimi'];
+const officalPlatform = 'n1n';
 
 /**
  * getALLPlatforms
@@ -16,7 +17,7 @@ exports.getALLPlatforms = () => {
  * @returns
  */
 exports.getOpenAIPlatforms = () => {
-  return [...openAIPlatforms, ...otherPlatforms];
+  return [...openAIPlatforms, ...otherPlatforms, officalPlatform];
 };
 
 /**

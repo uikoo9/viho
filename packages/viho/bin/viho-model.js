@@ -238,16 +238,17 @@ async function modelRemove() {
 
     // get models first
     const models = await getModels(db);
+    const userModels = models.filter((model) => !model.offical);
 
     // check if any models exist
-    if (!models || !models.length) {
+    if (!userModels || !userModels.length) {
       console.log(cli.colors.red('No models found. Add one first: viho model add'));
       console.log();
       return;
     }
 
     // create choices from model names
-    const choices = models.map((model) => model.modelName);
+    const choices = userModels.map((model) => model.modelName);
 
     // q a
     const questions = [

@@ -57,6 +57,9 @@ async function expertList() {
  * @param {*} expertName
  */
 async function expertAskByName(expertName) {
+  // logo
+  printLogo();
+
   // pre ask
   const model = await preLLMAsk(`expert (${expertName})`, db);
   if (!model) return;
