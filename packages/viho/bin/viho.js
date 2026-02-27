@@ -12,6 +12,7 @@ const { initViho, printLogo } = require('../src/util.js');
   await initViho();
 
   // cmds
+  require('./viho-login.js');
   require('./viho-model.js');
   require('./viho-ask.js');
   require('./viho-chat.js');

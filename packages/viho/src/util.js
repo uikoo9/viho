@@ -72,6 +72,17 @@ exports.preLLMAsk = async (type, db, modelName) => {
   const model = await getModelByName(db, modelName);
   if (!model) return;
 
+  // check offical model
+  if (model.offical) {
+    const n1nToken = await db.config('n1nToken');
+    if (!n1nToken) {
+      console.log(cli.colors.red('Official models require authentication. Please login using: viho login'));
+      return;
+    }
+
+    model.apiKey = n1nToken;
+  }
+
   // log
   console.log(cli.colors.cyan(`Welcome to viho ${type}! Using model: ${model.modelName}`));
   console.log(cli.colors.gray('Press Ctrl+C to exit\n'));

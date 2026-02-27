@@ -32,7 +32,6 @@ exports.ask = async (llm, model, systemPrompt) => {
   console.log();
   console.log(cli.colors.gray('Question:'));
   console.log(cli.colors.gray(answers.content));
-  console.log();
 
   // platform
   const platform = model.platform || 'openai';
@@ -77,6 +76,7 @@ exports.ask = async (llm, model, systemPrompt) => {
       process.stdout.write(cli.colors.gray(msg));
     },
     firstContentCallback: () => {
+      console.log();
       console.log();
       console.log(cli.colors.cyan('[Response]'));
       console.log();
