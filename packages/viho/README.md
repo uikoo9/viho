@@ -4,381 +4,97 @@
 
 <h1 align="center">viho</h1>
 
-<p align="center">A lightweight CLI tool for managing and interacting with AI models.</p>
+<p align="center">A lightweight CLI tool for interacting with AI models.</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/viho"><img src="https://img.shields.io/npm/v/viho.svg" alt="npm version"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 </p>
 
-## Features
+## Why viho?
 
-- Multiple AI model management (OpenAI, Google Gemini)
-- Support for OpenAI-compatible APIs
-- Support for Google Gemini AI (API and Vertex AI)
-- Interactive Q&A with streaming responses
-- Continuous chat sessions for multi-turn conversations
-- Support for thinking mode (for compatible models)
-- Expert mode with domain-specific knowledge
-- Configurable API endpoints
-- Default model configuration
-- Simple and intuitive CLI interface
-- Persistent configuration storage
+**Traditional way to use AI models:**
+Open browser → Navigate to website → Login → Ask questions
+
+**With viho:**
+Just type `viho ask` or `viho chat`
 
 ## Installation
-
-Install globally via npm:
 
 ```bash
 npm install -g viho
 ```
 
-## Requirements
+**Requirements:** Node.js >= 18.0.0
 
-- Node.js >= 18.0.0
+## Use Your Own Models
 
-## Quick Start
-
-1. Add your first AI model:
+Configure and use your own AI model API keys:
 
 ```bash
-viho model add
+viho model add       # Add a new model configuration
+viho model list      # List all configured models
+viho model remove    # Remove a model
+viho model default   # Set default model
+
+# Then start using
+viho ask             # Single question
+viho chat            # Continuous conversation
 ```
 
-2. Set it as default:
+**Supported platforms:** OpenAI, DeepSeek, Kimi, Doubao, Google Gemini (API & Vertex AI), and any OpenAI-compatible APIs.
+
+## Use Official Models
+
+Access premium AI models instantly without configuration:
 
 ```bash
-viho model default
+viho login           # Login to https://n1n.ai/
+viho model default   # Select an official model
+
+# Then start using
+viho ask             # Single question
+viho chat            # Continuous conversation
 ```
 
-3. Start asking questions:
+### Available Official Models
 
-```bash
-viho ask
-```
+- **gpt-5.2** - OpenAI GPT-5.2
+- **claude-sonnet-4-6** - Anthropic Claude Sonnet 4.6
+- **claude-opus-4-6** - Anthropic Claude Opus 4.6
+- **gemini-3.1-pro-preview** - Google Gemini 3.1 Pro Preview
+- **grok-4.1** - xAI Grok 4.1
+- **doubao-seed-1-8-251228** - ByteDance Doubao Seed 1.8
+- **deepseek-v3.2** - DeepSeek V3.2
+- **qwen3.5-plus** - Alibaba Qwen 3.5 Plus
+- **kimi-k2.5** - Moonshot Kimi K2.5
+- **MiniMax-M2.5** - MiniMax M2.5
 
-## Commands
-
-### Model Management
-
-#### `viho model add`
-
-Add a new AI model configuration interactively.
-
-First, you'll select the platform:
-
-- **openai** - For OpenAI official API
-- **gemini api** - For Google Gemini AI Studio
-- **gemini vertex** - For Google Gemini Vertex AI
-- **deepseek** - For DeepSeek (OpenAI-compatible)
-- **kimi** - For Kimi/Moonshot (OpenAI-compatible)
-
-Then you'll be prompted to enter the required information based on the platform:
-
-**For OpenAI-compatible platforms (openai, deepseek, kimi):**
-
-- Model name (a custom identifier)
-- API key
-- Base URL (e.g., https://api.openai.com/v1)
-- Model ID (e.g., gpt-4, gpt-4o)
-- Thinking mode (enabled/disabled)
-
-**For Gemini API:**
-
-- Model name (a custom identifier)
-- API key (from Google AI Studio)
-- Model ID (e.g., gemini-pro, gemini-1.5-flash, gemini-1.5-pro)
-
-**For Gemini Vertex:**
-
-- Model name (a custom identifier)
-- Project ID (your GCP project)
-- Location (e.g., us-east1, us-central1)
-- Model ID (e.g., gemini-1.5-flash-002, gemini-1.5-pro-002)
-
-```bash
-viho model add
-```
-
-After adding a model, it will be available for use with `viho ask`, `viho chat`, and `viho expert` commands.
-
-#### `viho model list`
-
-List all configured models with detailed information.
-
-```bash
-viho model list
-```
-
-This command displays:
-
-- Model name with a `(default)` tag for the default model
-- Platform (openai, deepseek, kimi, gemini api, or gemini vertex)
-- Platform-specific configuration details
-
-**Example output:**
-
-```
-Configured models:
-
-  • gpt4 (default)
-    Platform: openai
-    Model ID: gpt-4o
-    Base URL: https://api.openai.com/v1
-    Thinking: enabled
-
-  • deepseek
-    Platform: deepseek
-    Model ID: deepseek-chat
-    Base URL: https://api.deepseek.com/v1
-    Thinking: enabled
-
-  • gemini
-    Platform: gemini api
-    Model ID: gemini-1.5-flash
-    API Key: ***
-
-  • gemini-pro
-    Platform: gemini vertex
-    Model ID: gemini-1.5-pro-002
-    Project ID: my-project-123
-    Location: us-east1
-```
-
-#### `viho model remove`
-
-Remove a model configuration:
-
-```bash
-viho model remove
-```
-
-You'll be presented with a list of your configured models to choose from. If the removed model was set as default, you'll need to set a new default model.
-
-#### `viho model default`
-
-Set a default model for chat and ask sessions:
-
-```bash
-viho model default
-```
-
-You'll be presented with a list of your configured models to choose from. The default model will be used when you run `viho ask`, `viho chat`, or `viho expert` commands without specifying a model name.
-
-### Ask
-
-#### `viho ask [modelName]`
-
-Ask a question to an AI model.
-
-If no model name is provided, uses the default model:
-
-```bash
-viho ask
-```
-
-Or specify a model explicitly:
-
-```bash
-viho ask mymodel
-```
-
-The interface includes:
-
-- Editor-based question input
-- Streaming responses
-- Visual thinking process (when enabled)
-- Colored output for better readability
-
-### Chat
-
-#### `viho chat [modelName]`
-
-Start a continuous chat session with an AI model for multi-turn conversations.
-
-If no model name is provided, uses the default model:
-
-```bash
-viho chat
-```
-
-Or specify a model explicitly:
-
-```bash
-viho chat mymodel
-```
-
-The chat session runs in a loop, allowing you to ask multiple questions continuously without restarting the command. Each question uses the same model configuration but starts a fresh conversation context.
-
-**Note:** The main difference between `viho ask` and `viho chat`:
-
-- `viho ask` - Single question, exits after receiving the answer
-- `viho chat` - Continuous loop, keeps asking for new questions until manually stopped (Ctrl+C)
+## Additional Features
 
 ### Expert Mode
 
-Expert mode allows you to chat with an AI model that has access to domain-specific documentation, making it more knowledgeable about particular libraries or frameworks.
-
-#### `viho expert list`
-
-List all available expert resources:
+Get domain-specific help with pre-loaded documentation:
 
 ```bash
-viho expert list
+viho expert list     # List available experts
+viho expert antd     # Get help with Ant Design
+viho expert daisyui  # Get help with DaisyUI
 ```
 
-This displays available experts like:
+### Thinking Mode
 
-- `antd` - Ant Design documentation
-- `daisyui` - DaisyUI documentation
-
-#### `viho expert <name> [modelName]`
-
-Start an expert chat session with domain-specific knowledge:
+For compatible models, enable thinking mode to see the AI's reasoning process:
 
 ```bash
-viho expert antd
-```
-
-Or specify a model explicitly:
-
-```bash
-viho expert daisyui mymodel
-```
-
-The expert mode works similarly to `viho chat` but includes the relevant documentation as context, making the AI more accurate when answering questions about that specific library or framework.
-
-**Example:**
-
-```bash
-# Get help with Ant Design
-viho expert antd
-
-# Ask: "How do I create a responsive table with sorting?"
-# The AI will use Ant Design documentation to provide accurate answers
+# Enabled during model configuration
+viho model add
+# Select "enabled" for thinking mode
 ```
 
 ## Configuration
 
-Configuration is stored in `~/viho.json`. You can manage all settings through the CLI commands.
-
-### Example Configuration Structure
-
-```json
-{
-  "models": [
-    {
-      "modelName": "mymodel",
-      "apiKey": "your-api-key",
-      "baseURL": "https://api.openai.com/v1",
-      "modelID": "gpt-4",
-      "modelThinking": "auto"
-    }
-  ],
-  "default": "mymodel"
-}
-```
-
-## Supported Providers
-
-viho supports multiple AI providers and platforms:
-
-### OpenAI-Compatible APIs
-
-- **OpenAI** - Official OpenAI API (GPT-4, GPT-4o, GPT-3.5, etc.)
-- **DeepSeek** - DeepSeek AI with reasoning capabilities
-- **Kimi** - Moonshot AI (Kimi)
-- Any other OpenAI-compatible API endpoints
-
-### Google Gemini
-
-- **Gemini API** (via Google AI Studio)
-  - Ideal for personal development and prototyping
-  - Get API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
-
-- **Gemini Vertex AI** (via Google Cloud)
-  - Enterprise-grade with advanced features
-  - Requires Google Cloud project with Vertex AI enabled
-  - Supports context caching for cost optimization
-
-## Examples
-
-### Adding an OpenAI Model
-
-```bash
-viho model add
-# Select platform: openai
-# Enter model name: gpt4
-# Enter API key: sk-...
-# Enter base URL: https://api.openai.com/v1
-# Enter model ID: gpt-4o
-# Thinking mode: disabled
-```
-
-### Adding a DeepSeek Model
-
-```bash
-viho model add
-# Select platform: deepseek
-# Enter model name: deepseek
-# Enter API key: sk-...
-# Enter base URL: https://api.deepseek.com/v1
-# Enter model ID: deepseek-chat
-# Thinking mode: enabled
-```
-
-### Adding a Kimi Model
-
-```bash
-viho model add
-# Select platform: kimi
-# Enter model name: kimi
-# Enter API key: sk-...
-# Enter base URL: https://api.moonshot.cn/v1
-# Enter model ID: moonshot-v1-8k
-# Thinking mode: disabled
-```
-
-### Adding a Gemini API Model
-
-```bash
-viho model add
-# Select platform: gemini api
-# Enter model name: gemini
-# Enter API key: your-google-ai-api-key
-# Enter model ID: gemini-1.5-flash
-```
-
-### Adding a Gemini Vertex AI Model
-
-```bash
-viho model add
-# Select platform: gemini vertex
-# Enter model name: gemini-pro
-# Enter projectId: my-gcp-project
-# Enter location: us-east1
-# Enter model ID: gemini-1.5-pro-002
-```
-
-### Setting Up for First Use
-
-```bash
-# Add a model
-viho model add
-
-# Set it as default
-viho model default
-
-# Start asking questions
-viho ask
-```
-
-## Dependencies
-
-- [qiao-cli](https://www.npmjs.com/package/qiao-cli) - CLI utilities
-- [qiao-config](https://www.npmjs.com/package/qiao-config) - Configuration management
-- [qiao-file](https://www.npmjs.com/package/qiao-file) - File utilities
-- [viho-llm](https://www.npmjs.com/package/viho-llm) - Multi-provider LLM integration (OpenAI, Gemini)
+All settings are stored in `~/viho.json`. You can manage everything through the CLI commands.
 
 ## License
 
@@ -388,10 +104,8 @@ MIT
 
 uikoo9 <uikoo9@qq.com>
 
-## Issues
+## Links
 
-Report issues at: https://github.com/uikoo9/viho/issues
-
-## Homepage
-
-https://github.com/uikoo9/viho
+- **GitHub:** https://github.com/uikoo9/viho
+- **Issues:** https://github.com/uikoo9/viho/issues
+- **npm:** https://www.npmjs.com/package/viho
