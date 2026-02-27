@@ -4,7 +4,7 @@ const officalModelNames = ['kimi-k2.5'];
  * getOfficalModels
  */
 exports.getOfficalModels = () => {
-  officalModelNames.map((modelName) => {
+  return officalModelNames.map((modelName) => {
     return {
       modelName: modelName,
       apiKey: '',
@@ -12,6 +12,7 @@ exports.getOfficalModels = () => {
       modelID: modelName,
       modelThinking: 'enabled',
       platform: 'n1n',
+      offical: true,
     };
   });
 };

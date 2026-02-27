@@ -16,6 +16,9 @@ const { OpenAIAPI, GeminiAPI, GeminiVertex } = require('viho-llm');
 // platforms
 const { getOpenAIPlatforms } = require('./platforms.js');
 
+// offical models
+const { getOfficalModels } = require('./offical-models.js');
+
 // model
 const { getModelByName } = require('./model.js');
 
@@ -26,6 +29,19 @@ const { getModelByName } = require('./model.js');
 exports.getDB = () => {
   const dbPath = path.resolve(os.homedir(), './viho.json');
   return DB(dbPath);
+};
+
+/**
+ * initViho
+ */
+exports.initViho = async () => {
+  const db = exports.getDB();
+  const localJson = await db.all();
+  if (localJson && localJson.models && localJson.models.length) return;
+
+  // set offical models
+  const officalModels = getOfficalModels();
+  await db.config('models', officalModels);
 };
 
 /**
