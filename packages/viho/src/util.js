@@ -56,8 +56,7 @@ exports.preLLMAsk = async (type, db, modelName) => {
   const model = await getModelByName(db, modelName);
   if (!model) return;
 
-  // logo
-  exports.printLogo();
+  // log
   console.log(cli.colors.cyan(`Welcome to viho ${type}! Using model: ${model.modelName}`));
   console.log(cli.colors.gray('Press Ctrl+C to exit\n'));
 

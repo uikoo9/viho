@@ -209,6 +209,9 @@ async function modelList() {
  */
 async function modelRemove() {
   try {
+    // logo
+    printLogo();
+
     // get models first
     const models = await getModels(db);
 
@@ -263,6 +266,9 @@ async function modelRemove() {
  */
 async function modelDefault() {
   try {
+    // logo
+    printLogo();
+
     // get models first
     const models = await getModels(db);
 
