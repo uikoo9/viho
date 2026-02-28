@@ -1,6 +1,6 @@
 {
   "name": "viho-llm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Utility library for working with multiple LLM providers (Google Gemini and OpenAI), providing common tools and helpers for AI interactions",
   "keywords": [
     "llm",
