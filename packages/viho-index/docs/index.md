@@ -52,6 +52,24 @@ Just type `viho ask` or `viho chat`
 
 ## Installation
 
+### Quick Install (Recommended)
+
+**Linux & macOS:**
+
+```bash
+curl -fsSL https://www.viho.fun/install.sh | sh
+```
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://www.viho.fun/install.ps1 | iex
+```
+
+No Node.js required! The installer will download a standalone binary for your platform.
+
+### Alternative: If you already have Node.js
+
 ```bash
 npm install -g viho
 ```
