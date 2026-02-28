@@ -18,15 +18,17 @@
     "check": "qpro ncu && lerna exec 'qpro ncu' --concurrency=1",
     "update": "qpro ncu u && lerna exec 'qpro ncu u' --concurrency=1",
     "pkg": "qpro pkg ./packages",
-    "dpkg": "qpro pkg ./packages dev"
+    "dpkg": "qpro pkg ./packages dev",
+    "index:dev": "npm run dev -w viho-index",
+    "index:build": "npm run build -w viho-index"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
     "husky": "^9.1.7",
-    "lerna": "^9.0.1",
+    "lerna": "^9.0.4",
     "lint-staged": "^16.2.7",
-    "nx": "^22.1.0",
-    "qiao-project": "^5.0.2"
+    "nx": "^22.5.3",
+    "qiao-project": "^5.0.6"
   }
 }
