@@ -179,5 +179,6 @@ dist
 ## -- projects --
 .nx
 .npmrc
-packages/viho-index/docs/.vitepress
+packages/viho-index/docs/.vitepress/cache
+packages/viho-index/docs/.vitepress/dist
 packages/viho-llm/test.js
