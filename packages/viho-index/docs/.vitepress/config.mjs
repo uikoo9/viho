@@ -23,6 +23,14 @@ export default defineConfig({
 
   sitemap: {
     hostname: 'https://www.viho.fun',
+    lastmodDateOnly: false,
+    transformItems: (items) => {
+      return items.map((item) => ({
+        ...item,
+        changefreq: 'weekly',
+        priority: 1,
+      }));
+    },
   },
 
   themeConfig: {
