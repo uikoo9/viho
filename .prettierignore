@@ -4,3 +4,4 @@ node_modules
 package-lock.json
 
 # packages
+packages/viho-index/docs/.vitepress

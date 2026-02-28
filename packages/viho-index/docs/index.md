@@ -1,22 +1,53 @@
-<p align="center">
-  <img src="https://static-small.vincentqiao.com/viho/logo.png" alt="viho logo" width="200"/>
-</p>
+---
+layout: home
 
-<h1 align="center">viho</h1>
+hero:
+  name: 'Viho'
+  text: 'AI Model CLI Tool'
+  tagline: A lightweight CLI tool for interacting with AI models
+  image:
+    src: https://static-small.vincentqiao.com/viho/logo.png
+    alt: Viho Logo
+  actions:
+    - theme: brand
+      text: Get Started
+      link: '#installation'
+    - theme: alt
+      text: View on GitHub
+      link: https://github.com/uikoo9/viho
 
-<p align="center">A lightweight CLI tool for interacting with AI models.</p>
+features:
+  - icon: 🚀
+    title: Quick & Simple
+    details: Just type `viho ask` or `viho chat` - no browser, no login hassle. Access AI directly from your terminal.
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/viho"><img src="https://img.shields.io/npm/v/viho.svg" alt="npm version"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
-</p>
+  - icon: 🔑
+    title: Use Your Own Models
+    details: Configure your own API keys from OpenAI, DeepSeek, Kimi, Doubao, Google Gemini, or any OpenAI-compatible APIs.
 
-## Why viho?
+  - icon: 💎
+    title: Access Official Models
+    details: Login to n1n.ai and instantly access premium models like GPT-5.2, Claude Opus 4.6, Gemini 3.1 Pro, and more.
+
+  - icon: 🎯
+    title: Expert Mode
+    details: Get domain-specific help with pre-loaded documentation for libraries like Ant Design and DaisyUI.
+
+  - icon: 🧠
+    title: Thinking Mode
+    details: For compatible models, see the AI's reasoning process with thinking mode enabled.
+
+  - icon: ⚡️
+    title: Lightweight
+    details: Fast startup, minimal overhead, and simple configuration - everything stored in ~/viho.json.
+---
+
+## Why Viho?
 
 **Traditional way to use AI models:**
 Open browser → Navigate to website → Login → Ask questions
 
-**With viho:**
+**With Viho:**
 Just type `viho ask` or `viho chat`
 
 ## Installation
