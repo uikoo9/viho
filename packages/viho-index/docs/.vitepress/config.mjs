@@ -22,7 +22,7 @@ export default defineConfig({
   ],
 
   sitemap: {
-    hostname: 'https://www.viho.fun'
+    hostname: 'https://www.viho.fun',
   },
 
   themeConfig: {
@@ -30,10 +30,5 @@ export default defineConfig({
     siteTitle: 'viho.fun',
 
     socialLinks: [{ icon: 'github', link: 'https://github.com/uikoo9/viho' }],
-
-    footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present uikoo9',
-    },
   },
 });
