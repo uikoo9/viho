@@ -7,7 +7,11 @@ export default defineConfig({
   lang: 'en-US',
 
   head: [
-    ['link', { rel: 'icon', href: 'https://static-small.vincentqiao.com/viho/logo.png' }],
+    ['link', { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32.png' }],
+    ['link', { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16.png' }],
+    ['link', { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }],
+    ['link', { rel: 'manifest', href: '/manifest.json' }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'keywords', content: 'viho, AI CLI, GPT, Claude, Gemini, OpenAI, terminal, command line, AI assistant' }],
     ['meta', { property: 'og:type', content: 'website' }],
