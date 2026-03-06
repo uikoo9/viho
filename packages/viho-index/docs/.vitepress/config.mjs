@@ -23,6 +23,17 @@ export default defineConfig({
     ['meta', { name: 'twitter:title', content: 'Viho - AI Model CLI Tool' }],
     ['meta', { name: 'twitter:description', content: 'A lightweight CLI tool for interacting with AI models from your terminal.' }],
     ['meta', { name: 'twitter:image', content: 'https://static-small.vincentqiao.com/viho/logo.png' }],
+    [
+      'script',
+      {},
+      `(function(c,l,a,r,i,t,y){
+        if (window.location.href.indexOf('viho.fun') > -1) {
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        }
+      })(window,document,"clarity","script","vrh41itlv8");`,
+    ],
   ],
 
   sitemap: {
