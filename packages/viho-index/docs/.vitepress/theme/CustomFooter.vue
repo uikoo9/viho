@@ -21,7 +21,21 @@
           </a>
         </div>
 
-        <!-- Column 3: Contact -->
+        <!-- Column 3: More -->
+        <div class="custom-footer-column">
+          <h4 class="custom-footer-title">More</h4>
+          <a href="https://b.vincentqiao.com/en/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+            Blog
+          </a>
+          <a href="https://resume.vincentqiao.com/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+            Resume
+          </a>
+          <a href="https://code.vincentqiao.com/#/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+            Code Collection
+          </a>
+        </div>
+
+        <!-- Column 4: Contact -->
         <div class="custom-footer-column">
           <h4 class="custom-footer-title">Contact</h4>
           <a href="https://github.com/uikoo9" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
