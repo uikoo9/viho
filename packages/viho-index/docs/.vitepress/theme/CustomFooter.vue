@@ -24,8 +24,11 @@
         <!-- Column 3: More -->
         <div class="custom-footer-column">
           <h4 class="custom-footer-title">More</h4>
-          <a href="https://b.vincentqiao.com/en/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+          <a href="https://blog.vincentqiao.com/en/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
             Blog
+          </a>
+          <a href="https://blog.csdn.net/uikoo9" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+            CSDN
           </a>
           <a href="https://resume.vincentqiao.com/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
             Resume
