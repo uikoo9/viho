@@ -30,9 +30,6 @@
           <a href="https://blog.csdn.net/uikoo9" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
             CSDN
           </a>
-          <a href="https://resume.vincentqiao.com/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
-            Resume
-          </a>
           <a href="https://code.vincentqiao.com/#/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
             Code Collection
           </a>
@@ -44,6 +41,9 @@
           <a href="https://github.com/uikoo9" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
             GitHub
           </a>
+          <a href="https://resume.vincentqiao.com/" target="_blank" rel="noopener noreferrer" class="custom-footer-link">
+            Resume
+          </a>
           <a href="mailto:hello@vincentqiao.com" class="custom-footer-link">
             hello@vincentqiao.com
           </a>
@@ -54,7 +54,7 @@
 
   <div class="custom-sub-footer">
     <div class="custom-footer-container">
-      <span class="custom-sub-footer-text">© 2026 Vincent. All rights reserved.</span>
+      <span class="custom-sub-footer-text">© 2026 <a href="https://www.vincentqiao.com" target="_blank" rel="noopener noreferrer" class="custom-sub-footer-link">vincentqiao.com</a>. All rights reserved.</span>
     </div>
   </div>
 </template>
