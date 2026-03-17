@@ -4,10 +4,12 @@
  * @returns
  */
 export const callLLM = async (options) => {
-  const response = await options.llm.chat({
+  const chatOptions = {
     model: options.modelName,
     messages: options.messages,
-  });
+  };
+  if (options.thinking) chatOptions.thinking = options.thinking;
+  const response = await options.llm.chat(chatOptions);
   const fullContent = response.content || '';
 
   // r
