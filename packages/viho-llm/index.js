@@ -564,11 +564,15 @@ const extractJSON = (text) => {
 };
 
 // util
+
 /**
  * runAgents
  * @param {*} agents
  */
 const runAgents = async (agents) => {
+  // const
+  const agentResponses = [];
+
   // for
   for (let i = 0; i < agents.length; i++) {
     const agent = agents[i];
@@ -582,9 +586,10 @@ const runAgents = async (agents) => {
     // go
     agentStartCallback();
     const agentResponse = await callLLM(agentRequestOptions);
+    agentResponses.push(agentResponse);
 
     // check
-    const breakAgent = agentEndCallback(agentResponse);
+    const breakAgent = agentEndCallback(agentResponse, agentResponses);
     if (breakAgent) {
       if (agentBreakCallback) agentBreakCallback();
       break;

@@ -111,13 +111,13 @@ await runAgents([
   {
     agentStartCallback: () => console.log('Agent 1 starting'),
     agentRequestOptions: { llm: openai, modelName: 'gpt-4o', messages: [...], isJson: false, thinking: null },
-    agentEndCallback: (response) => { console.log(response); return false; },
+    agentEndCallback: (response, allResponses) => { console.log(response); return false; },
     agentBreakCallback: () => console.log('Breaking'),  // optional
   },
 ]);
 ```
 
-- `agentEndCallback` returns truthy to break the sequence
+- `agentEndCallback(response, allResponses)` — receives current response and all previous responses; returns truthy to break
 - `agentBreakCallback` (optional) is called before breaking
 
 ## License
