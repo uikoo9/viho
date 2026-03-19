@@ -22,27 +22,36 @@ export const callLLM = async (options) => {
  * @returns
  */
 export const extractJSON = (text) => {
-  const cleaned = text.replace(/\{\{/g, '{').replace(/\}\}/g, '}');
+  if (typeof text === 'object' && text !== null) return text;
+  const str = String(text).trim();
+
+  // 1. 尝试直接解析
   try {
-    return JSON.parse(cleaned);
-  } catch (e) {
-    // try next
+    return JSON.parse(str);
+  } catch (_) {
+    /* ignore */
   }
-  const codeBlock = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/);
-  if (codeBlock) {
+
+  // 2. 尝试从 markdown 代码块提取
+  const codeBlockMatch = str.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+  if (codeBlockMatch) {
     try {
-      return JSON.parse(codeBlock[1].trim());
-    } catch (e) {
-      // try next
+      return JSON.parse(codeBlockMatch[1].trim());
+    } catch (_) {
+      /* ignore */
     }
   }
-  const match = cleaned.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
-  if (match) {
+
+  // 3. 尝试提取第一个 {...} 块
+  const firstBrace = str.indexOf('{');
+  const lastBrace = str.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
     try {
-      return JSON.parse(match[1]);
-    } catch (e) {
-      // try next
+      return JSON.parse(str.slice(firstBrace, lastBrace + 1));
+    } catch (_) {
+      /* ignore */
     }
   }
-  throw new Error(`Cannot extract JSON from: ${text.slice(0, 200)}`);
+
+  throw new Error(`Cannot parse JSON from LLM response: ${str.slice(0, 200)}`);
 };
