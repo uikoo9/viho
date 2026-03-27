@@ -4,9 +4,11 @@ var genai = require('@google/genai');
 var mime = require('mime-types');
 var qiao_log_js = require('qiao.log.js');
 var OpenAI = require('openai');
+var crypto = require('crypto');
+var https = require('https');
 
 // gemini
-const logger$4 = qiao_log_js.Logger('gemini-util.js');
+const logger$6 = qiao_log_js.Logger('gemini-util.js');
 
 /**
  * chat
@@ -20,19 +22,19 @@ const chat$1 = async (client, modelName, chatOptions) => {
 
   // check
   if (!client) {
-    logger$4.error(methodName, 'need client');
+    logger$6.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$4.error(methodName, 'need modelName');
+    logger$6.error(methodName, 'need modelName');
     return;
   }
   if (!chatOptions) {
-    logger$4.error(methodName, 'need chatOptions');
+    logger$6.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger$4.error(methodName, 'need chatOptions.contents');
+    logger$6.error(methodName, 'need chatOptions.contents');
     return;
   }
 
@@ -48,13 +50,13 @@ const chat$1 = async (client, modelName, chatOptions) => {
     // gen
     const response = await client.models.generateContent(options);
     if (!response || !response.text) {
-      logger$4.error(methodName, 'invalid response');
+      logger$6.error(methodName, 'invalid response');
       return;
     }
 
     return response.text;
   } catch (error) {
-    logger$4.error(methodName, 'error', error);
+    logger$6.error(methodName, 'error', error);
   }
 };
 
@@ -71,23 +73,23 @@ const chatWithStreaming$1 = async (client, modelName, chatOptions, callbackOptio
 
   // check
   if (!client) {
-    logger$4.error(methodName, 'need client');
+    logger$6.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$4.error(methodName, 'need modelName');
+    logger$6.error(methodName, 'need modelName');
     return;
   }
   if (!chatOptions) {
-    logger$4.error(methodName, 'need chatOptions');
+    logger$6.error(methodName, 'need chatOptions');
     return;
   }
   if (!chatOptions.contents) {
-    logger$4.error(methodName, 'need chatOptions.contents');
+    logger$6.error(methodName, 'need chatOptions.contents');
     return;
   }
   if (!callbackOptions) {
-    logger$4.error(methodName, 'need callbackOptions');
+    logger$6.error(methodName, 'need callbackOptions');
     return;
   }
 
@@ -145,38 +147,38 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
 
   // check
   if (!client) {
-    logger$4.error(methodName, 'need client');
+    logger$6.error(methodName, 'need client');
     return;
   }
   if (!modelName) {
-    logger$4.error(methodName, 'need modelName');
+    logger$6.error(methodName, 'need modelName');
     return;
   }
   if (!cacheOptions) {
-    logger$4.error(methodName, 'need cacheOptions');
+    logger$6.error(methodName, 'need cacheOptions');
     return;
   }
   if (!cacheOptions.gsPath) {
-    logger$4.error(methodName, 'need cacheOptions.gsPath');
+    logger$6.error(methodName, 'need cacheOptions.gsPath');
     return;
   }
   if (!cacheOptions.systemPrompt) {
-    logger$4.error(methodName, 'need cacheOptions.systemPrompt');
+    logger$6.error(methodName, 'need cacheOptions.systemPrompt');
     return;
   }
   if (!cacheOptions.cacheName) {
-    logger$4.error(methodName, 'need cacheOptions.cacheName');
+    logger$6.error(methodName, 'need cacheOptions.cacheName');
     return;
   }
   if (!cacheOptions.cacheTTL) {
-    logger$4.error(methodName, 'need cacheOptions.cacheTTL');
+    logger$6.error(methodName, 'need cacheOptions.cacheTTL');
     return;
   }
 
   // const
   const mimeType = mime.lookup(cacheOptions.gsPath);
-  logger$4.info(methodName, 'cacheOptions', cacheOptions);
-  logger$4.info(methodName, 'mimeType', mimeType);
+  logger$6.info(methodName, 'cacheOptions', cacheOptions);
+  logger$6.info(methodName, 'mimeType', mimeType);
 
   try {
     // cache add
@@ -192,7 +194,7 @@ const cacheAdd = async (client, modelName, cacheOptions) => {
 
     return cache;
   } catch (error) {
-    logger$4.error(methodName, 'error', error);
+    logger$6.error(methodName, 'error', error);
   }
 };
 
@@ -206,7 +208,7 @@ const cacheList = async (client) => {
 
   // check
   if (!client) {
-    logger$4.error(methodName, 'need client');
+    logger$6.error(methodName, 'need client');
     return;
   }
 
@@ -220,7 +222,7 @@ const cacheList = async (client) => {
 
     return cacheObjs;
   } catch (error) {
-    logger$4.error(methodName, 'error', error);
+    logger$6.error(methodName, 'error', error);
   }
 };
 
@@ -236,15 +238,15 @@ const cacheUpdate = async (client, cacheName, cacheOptions) => {
 
   // check
   if (!client) {
-    logger$4.error(methodName, 'need client');
+    logger$6.error(methodName, 'need client');
     return;
   }
   if (!cacheName) {
-    logger$4.error(methodName, 'need cacheName');
+    logger$6.error(methodName, 'need cacheName');
     return;
   }
   if (!cacheOptions) {
-    logger$4.error(methodName, 'need cacheOptions');
+    logger$6.error(methodName, 'need cacheOptions');
     return;
   }
 
@@ -257,12 +259,12 @@ const cacheUpdate = async (client, cacheName, cacheOptions) => {
 
     return res;
   } catch (error) {
-    logger$4.error(methodName, 'error', error);
+    logger$6.error(methodName, 'error', error);
   }
 };
 
 // gemini
-const logger$3 = qiao_log_js.Logger('gemini-api.js');
+const logger$5 = qiao_log_js.Logger('gemini-api.js');
 
 /**
  * GeminiAPI
@@ -274,15 +276,15 @@ const GeminiAPI = (options) => {
 
   // check
   if (!options) {
-    logger$3.error(methodName, 'need options');
+    logger$5.error(methodName, 'need options');
     return;
   }
   if (!options.apiKey) {
-    logger$3.error(methodName, 'need options.apiKey');
+    logger$5.error(methodName, 'need options.apiKey');
     return;
   }
   if (!options.modelName) {
-    logger$3.error(methodName, 'need options.modelName');
+    logger$5.error(methodName, 'need options.modelName');
     return;
   }
 
@@ -305,7 +307,7 @@ const GeminiAPI = (options) => {
 };
 
 // gemini
-const logger$2 = qiao_log_js.Logger('viho-llm');
+const logger$4 = qiao_log_js.Logger('viho-llm');
 
 /**
  * GeminiVertex
@@ -317,19 +319,19 @@ const GeminiVertex = (options) => {
 
   // check
   if (!options) {
-    logger$2.error(methodName, 'need options');
+    logger$4.error(methodName, 'need options');
     return;
   }
   if (!options.projectId) {
-    logger$2.error(methodName, 'need options.projectId');
+    logger$4.error(methodName, 'need options.projectId');
     return;
   }
   if (!options.location) {
-    logger$2.error(methodName, 'need options.location');
+    logger$4.error(methodName, 'need options.location');
     return;
   }
   if (!options.modelName) {
-    logger$2.error(methodName, 'need options.modelName');
+    logger$4.error(methodName, 'need options.modelName');
     return;
   }
 
@@ -365,7 +367,7 @@ const GeminiVertex = (options) => {
 };
 
 // Logger
-const logger$1 = qiao_log_js.Logger('openai-util.js');
+const logger$3 = qiao_log_js.Logger('openai-util.js');
 
 /**
  * chat
@@ -378,11 +380,11 @@ const chat = async (client, chatOptions) => {
 
   // check
   if (!client) {
-    logger$1.error(methodName, 'need client');
+    logger$3.error(methodName, 'need client');
     return;
   }
   if (!chatOptions) {
-    logger$1.error(methodName, 'need chatOptions');
+    logger$3.error(methodName, 'need chatOptions');
     return;
   }
 
@@ -391,7 +393,7 @@ const chat = async (client, chatOptions) => {
     const completion = await client.chat.completions.create(chatOptions);
     return completion.choices[0]?.message;
   } catch (error) {
-    logger$1.error(methodName, 'error', error);
+    logger$3.error(methodName, 'error', error);
   }
 };
 
@@ -407,15 +409,15 @@ const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
 
   // check
   if (!client) {
-    logger$1.error(methodName, 'need client');
+    logger$3.error(methodName, 'need client');
     return;
   }
   if (!chatOptions) {
-    logger$1.error(methodName, 'need chatOptions');
+    logger$3.error(methodName, 'need chatOptions');
     return;
   }
   if (!callbackOptions) {
-    logger$1.error(methodName, 'need callbackOptions');
+    logger$3.error(methodName, 'need callbackOptions');
     return;
   }
 
@@ -469,7 +471,7 @@ const chatWithStreaming = async (client, chatOptions, callbackOptions) => {
 };
 
 // openai
-const logger = qiao_log_js.Logger('openai.js');
+const logger$2 = qiao_log_js.Logger('openai.js');
 
 /**
  * OpenAI
@@ -481,15 +483,15 @@ const OpenAIAPI = (options) => {
 
   // check
   if (!options) {
-    logger.error(methodName, 'need options');
+    logger$2.error(methodName, 'need options');
     return;
   }
   if (!options.apiKey) {
-    logger.error(methodName, 'need options.apiKey');
+    logger$2.error(methodName, 'need options.apiKey');
     return;
   }
   if (!options.baseURL) {
-    logger.error(methodName, 'need options.baseURL');
+    logger$2.error(methodName, 'need options.baseURL');
     return;
   }
 
@@ -512,6 +514,281 @@ const OpenAIAPI = (options) => {
 
   //
   return openai;
+};
+
+// crypto
+const logger$1 = qiao_log_js.Logger('liblib-util.js');
+
+/**
+ * generateSignature
+ * @param {*} uri
+ * @param {*} secretKey
+ * @returns
+ */
+const generateSignature = (uri, secretKey) => {
+  const timestamp = String(Date.now());
+  const signatureNonce = crypto.randomBytes(8).toString('hex');
+  const content = `${uri}&${timestamp}&${signatureNonce}`;
+
+  const hmac = crypto.createHmac('sha1', secretKey);
+  hmac.update(content);
+  const signature = hmac.digest('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+  return { signature, timestamp, signatureNonce };
+};
+
+/**
+ * request
+ * @param {*} baseURL
+ * @param {*} accessKey
+ * @param {*} secretKey
+ * @param {*} uri
+ * @param {*} body
+ * @returns
+ */
+const request = (baseURL, accessKey, secretKey, uri, body) => {
+  const methodName = 'request';
+
+  return new Promise((resolve, reject) => {
+    const { signature, timestamp, signatureNonce } = generateSignature(uri, secretKey);
+    const query =
+      `AccessKey=${accessKey}` +
+      `&Signature=${signature}` +
+      `&Timestamp=${timestamp}` +
+      `&SignatureNonce=${signatureNonce}`;
+
+    const postData = JSON.stringify(body);
+
+    const options = {
+      hostname: baseURL,
+      path: `${uri}?${query}`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData),
+      },
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          logger$1.error(methodName, 'JSON parse error', data);
+          reject(new Error('JSON parse error: ' + data));
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      logger$1.error(methodName, 'request error', error);
+      reject(error);
+    });
+    req.write(postData);
+    req.end();
+  });
+};
+
+/**
+ * text2img
+ * @param {*} baseURL
+ * @param {*} accessKey
+ * @param {*} secretKey
+ * @param {*} prompt
+ * @param {*} options
+ * @returns
+ */
+const text2img = (baseURL, accessKey, secretKey, prompt, options) => {
+  const methodName = 'text2img';
+
+  // check
+  if (!prompt) {
+    logger$1.error(methodName, 'need prompt');
+    return;
+  }
+
+  options = options || {};
+  const generateParams = {
+    prompt: prompt,
+    aspectRatio: options.aspectRatio || 'portrait',
+    imgCount: options.imgCount || 1,
+    steps: options.steps || 30,
+  };
+
+  if (options.width && options.height) {
+    delete generateParams.aspectRatio;
+    generateParams.imageSize = {
+      width: options.width,
+      height: options.height,
+    };
+  }
+
+  if (options.controlnet) {
+    generateParams.controlnet = options.controlnet;
+  }
+
+  return request(baseURL, accessKey, secretKey, '/api/generate/webui/text2img/ultra', {
+    templateUuid: '5d7e67009b344550bc1aa6ccbfa1d7f4',
+    generateParams: generateParams,
+  });
+};
+
+/**
+ * img2img
+ * @param {*} baseURL
+ * @param {*} accessKey
+ * @param {*} secretKey
+ * @param {*} prompt
+ * @param {*} sourceImage
+ * @param {*} options
+ * @returns
+ */
+const img2img = (baseURL, accessKey, secretKey, prompt, sourceImage, options) => {
+  const methodName = 'img2img';
+
+  // check
+  if (!prompt) {
+    logger$1.error(methodName, 'need prompt');
+    return;
+  }
+  if (!sourceImage) {
+    logger$1.error(methodName, 'need sourceImage');
+    return;
+  }
+
+  options = options || {};
+  const generateParams = {
+    prompt: prompt,
+    sourceImage: sourceImage,
+    imgCount: options.imgCount || 1,
+  };
+
+  if (options.controlnet) {
+    generateParams.controlnet = options.controlnet;
+  }
+
+  return request(baseURL, accessKey, secretKey, '/api/generate/webui/img2img/ultra', {
+    templateUuid: '07e00af4fc464c7ab55ff906f8acf1b7',
+    generateParams: generateParams,
+  });
+};
+
+/**
+ * queryStatus
+ * @param {*} baseURL
+ * @param {*} accessKey
+ * @param {*} secretKey
+ * @param {*} generateUuid
+ * @returns
+ */
+const queryStatus = (baseURL, accessKey, secretKey, generateUuid) => {
+  return request(baseURL, accessKey, secretKey, '/api/generate/webui/status', {
+    generateUuid: generateUuid,
+  });
+};
+
+/**
+ * waitForResult
+ * @param {*} baseURL
+ * @param {*} accessKey
+ * @param {*} secretKey
+ * @param {*} generateUuid
+ * @param {*} intervalMs
+ * @param {*} maxRetries
+ * @returns
+ */
+const waitForResult = (baseURL, accessKey, secretKey, generateUuid, intervalMs, maxRetries) => {
+  intervalMs = intervalMs || 3000;
+  maxRetries = maxRetries || 60;
+
+  return new Promise((resolve, reject) => {
+    let attempt = 0;
+
+    function poll() {
+      attempt++;
+      queryStatus(baseURL, accessKey, secretKey, generateUuid)
+        .then((res) => {
+          const status = res.data && res.data.generateStatus;
+
+          if (status === 5) {
+            return resolve(res.data);
+          }
+          if (status === 6 || status === 7) {
+            return reject(new Error('Generation failed: ' + (res.data.generateMsg || 'unknown')));
+          }
+
+          if (attempt >= maxRetries) {
+            return reject(new Error('Polling timeout after ' + maxRetries + ' retries'));
+          }
+
+          setTimeout(poll, intervalMs);
+        })
+        .catch(reject);
+    }
+
+    poll();
+  });
+};
+
+// util
+const logger = qiao_log_js.Logger('liblib.js');
+
+/**
+ * LibLibAPI
+ * @param {*} options
+ * @returns
+ */
+const LibLibAPI = (options) => {
+  const methodName = 'LibLibAPI';
+
+  // check
+  if (!options) {
+    logger.error(methodName, 'need options');
+    return;
+  }
+  if (!options.accessKey) {
+    logger.error(methodName, 'need options.accessKey');
+    return;
+  }
+  if (!options.secretKey) {
+    logger.error(methodName, 'need options.secretKey');
+    return;
+  }
+
+  // config
+  const baseURL = options.baseURL || 'openapi.liblibai.cloud';
+  const accessKey = options.accessKey;
+  const secretKey = options.secretKey;
+
+  // liblib
+  const liblib = {};
+
+  // text2img
+  liblib.text2img = async (prompt, imgOptions) => {
+    return await text2img(baseURL, accessKey, secretKey, prompt, imgOptions);
+  };
+
+  // img2img
+  liblib.img2img = async (prompt, sourceImage, imgOptions) => {
+    return await img2img(baseURL, accessKey, secretKey, prompt, sourceImage, imgOptions);
+  };
+
+  // queryStatus
+  liblib.queryStatus = async (generateUuid) => {
+    return await queryStatus(baseURL, accessKey, secretKey, generateUuid);
+  };
+
+  // waitForResult
+  liblib.waitForResult = async (generateUuid, intervalMs, maxRetries) => {
+    return await waitForResult(baseURL, accessKey, secretKey, generateUuid, intervalMs, maxRetries);
+  };
+
+  //
+  return liblib;
 };
 
 /**
@@ -608,5 +885,6 @@ const runAgents = async (agents) => {
 
 exports.GeminiAPI = GeminiAPI;
 exports.GeminiVertex = GeminiVertex;
+exports.LibLibAPI = LibLibAPI;
 exports.OpenAIAPI = OpenAIAPI;
 exports.runAgents = runAgents;
